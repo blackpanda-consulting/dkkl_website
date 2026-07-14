@@ -3,6 +3,7 @@ import TopNav from "@/components/TopNav";
 import MobileActions from "@/components/MobileActions";
 import Faq from "@/components/Faq";
 import StayCalculator from "@/components/StayCalculator";
+import Reveal from "@/components/Reveal";
 import { getSettings } from "@/lib/settings";
 import {
   hero,
@@ -32,31 +33,31 @@ export default async function Home() {
         <section id="home" className="relative overflow-hidden">
           <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 py-16 md:grid-cols-[1.1fr_0.9fr] md:py-24">
             <div>
-              <p className="mb-3 inline-block rounded-full bg-accent-soft px-3 py-1 text-xs font-semibold uppercase tracking-wide text-accent">
+              <p className="enter mb-3 inline-block rounded-full bg-accent-soft px-3 py-1 text-xs font-semibold uppercase tracking-wide text-accent">
                 {hero.eyebrow}
               </p>
-              <h1 className="text-3xl font-semibold leading-tight text-foreground md:text-5xl">
+              <h1 className="enter enter-1 text-3xl font-semibold leading-tight text-foreground md:text-5xl">
                 {hero.headline}
               </h1>
-              <p className="mt-5 max-w-xl text-lg leading-relaxed text-muted">
+              <p className="enter enter-2 mt-5 max-w-xl text-lg leading-relaxed text-muted">
                 {hero.body}
               </p>
-              <div className="mt-8 flex flex-wrap gap-3">
+              <div className="enter enter-3 mt-8 flex flex-wrap gap-3">
                 <Link
                   href="#pricing"
-                  className="rounded-full bg-accent px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-accent-hover"
+                  className="rounded-full bg-accent px-6 py-3 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 hover:bg-accent-hover"
                 >
                   {hero.primaryCta}
                 </Link>
                 <a
                   href={tel}
-                  className="rounded-full border border-border bg-surface px-6 py-3 text-sm font-semibold text-foreground transition-colors hover:border-accent hover:text-accent"
+                  className="rounded-full border border-border bg-surface px-6 py-3 text-sm font-semibold text-foreground transition-all hover:-translate-y-0.5 hover:border-accent hover:text-accent"
                 >
                   {hero.secondaryCta}
                 </a>
               </div>
             </div>
-            <div className="rounded-3xl border border-border bg-surface p-8 shadow-sm">
+            <div className="enter enter-3 rounded-3xl border border-border bg-surface p-8 shadow-sm">
               <blockquote className="font-serif text-xl leading-relaxed text-foreground/90">
                 &ldquo;A quiet, respectful place to be together in Kashi during
                 the final phase of life.&rdquo;
@@ -112,7 +113,7 @@ export default async function Home() {
         <Section id="how" title={howItWorks.heading}>
           <ol className="mx-auto grid max-w-4xl gap-4 sm:grid-cols-2">
             {howItWorks.steps.map((step, i) => (
-              <li key={i} className="flex gap-4 rounded-xl border border-border bg-surface p-4">
+              <li key={i} className="lift flex gap-4 rounded-xl border border-border bg-surface p-4">
                 <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent text-sm font-semibold text-white">
                   {i + 1}
                 </span>
@@ -190,10 +191,10 @@ function Section({
       className={tone === "muted" ? "bg-surface-muted" : "bg-background"}
     >
       <div className="mx-auto max-w-6xl px-4 py-14 md:py-20">
-        <h2 className="mb-8 text-center text-2xl font-semibold text-foreground md:text-3xl">
+        <Reveal as="h2" className="mb-8 text-center text-2xl font-semibold text-foreground md:text-3xl">
           {title}
-        </h2>
-        {children}
+        </Reveal>
+        <Reveal delay={1}>{children}</Reveal>
       </div>
     </section>
   );
@@ -201,7 +202,7 @@ function Section({
 
 function Card({ children }: { children: React.ReactNode }) {
   return (
-    <div className="rounded-2xl border border-border bg-surface p-6 shadow-sm">
+    <div className="lift rounded-2xl border border-border bg-surface p-6 shadow-sm">
       {children}
     </div>
   );

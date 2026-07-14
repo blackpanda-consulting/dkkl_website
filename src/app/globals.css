@@ -5,15 +5,15 @@
    A deliberately calm, warm, dignified light theme for a sensitive subject.
    --------------------------------------------------------------------------- */
 :root {
-  --background: #fbf8f3; /* warm paper */
+  --background: #fbf7f0; /* warm paper */
   --surface: #ffffff;
-  --surface-muted: #f4efe6;
-  --foreground: #2b2620; /* soft near-black */
-  --muted: #6b6459;
-  --border: #e7dfd1;
-  --accent: #a8471f; /* deep saffron / terracotta */
-  --accent-hover: #8f3c19;
-  --accent-soft: #f7ecdf;
+  --surface-muted: #f5eee2;
+  --foreground: #2a2318; /* warm near-black */
+  --muted: #6f6656;
+  --border: #ece1cf;
+  --accent: #b8501f; /* refined saffron / terracotta */
+  --accent-hover: #9c4118;
+  --accent-soft: #f8ead9;
   --success: #2f7a4d;
   --danger: #b3261e;
 }
@@ -50,6 +50,52 @@ html {
   scroll-behavior: smooth;
   scroll-padding-top: 5rem;
 }
+
+/* ---------------------------------------------------------------------------
+   Motion — subtle and tasteful only.
+   --------------------------------------------------------------------------- */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Load-in entrance (hero) */
+.enter { animation: fadeUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.enter-1 { animation-delay: 0.08s; }
+.enter-2 { animation-delay: 0.16s; }
+.enter-3 { animation-delay: 0.24s; }
+
+/* Scroll reveal (toggled by IntersectionObserver via .is-visible) */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+.reveal.is-visible { opacity: 1; transform: translateY(0); }
+.reveal[data-delay="1"] { transition-delay: 0.08s; }
+.reveal[data-delay="2"] { transition-delay: 0.16s; }
+.reveal[data-delay="3"] { transition-delay: 0.24s; }
+
+/* Gentle hover lift for cards */
+.lift { transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease; }
+.lift:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px -12px rgba(90, 55, 20, 0.22);
+}
+
+/* Smooth accordion (FAQ) */
+.acc-body {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.acc-body.open { grid-template-rows: 1fr; }
+.acc-body > div { overflow: hidden; }
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
+  .enter, .reveal { animation: none; opacity: 1; transform: none; transition: none; }
+  .lift:hover { transform: none; }
 }
