@@ -1,26 +1,55 @@
 @import "tailwindcss";
 
+/* ---------------------------------------------------------------------------
+   DKKL (Kashi Laabh) design tokens.
+   A deliberately calm, warm, dignified light theme for a sensitive subject.
+   --------------------------------------------------------------------------- */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #fbf8f3; /* warm paper */
+  --surface: #ffffff;
+  --surface-muted: #f4efe6;
+  --foreground: #2b2620; /* soft near-black */
+  --muted: #6b6459;
+  --border: #e7dfd1;
+  --accent: #a8471f; /* deep saffron / terracotta */
+  --accent-hover: #8f3c19;
+  --accent-soft: #f7ecdf;
+  --success: #2f7a4d;
+  --danger: #b3261e;
 }
 
 @theme inline {
   --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-muted: var(--surface-muted);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-soft: var(--accent-soft);
+  --color-success: var(--success);
+  --color-danger: var(--danger);
+  --font-sans: var(--font-sans-custom);
+  --font-serif: var(--font-serif-custom);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans-custom), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-serif-custom), Georgia, serif;
+  letter-spacing: -0.01em;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
 }
