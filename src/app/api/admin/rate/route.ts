@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
+import { revalidateTag, revalidatePath } from "next/cache";
 import { z } from "zod";
 import { isAdmin } from "@/lib/admin-auth";
-import { getSettings, updateRate } from "@/lib/settings";
+import { getSettings, updateRate, SETTINGS_TAG } from "@/lib/settings";
 
 export const runtime = "nodejs";
 
@@ -44,6 +45,11 @@ export async function PUT(request: Request) {
     depositPaise: parsed.data.depositRupees * 100,
     updatedBy: "admin",
   });
+
+  // Refresh the cached public pricing and the home page. (The payable amount is
+  // always recomputed server-side at order time, so display staleness is safe.)
+  revalidateTag(SETTINGS_TAG, "max");
+  revalidatePath("/");
 
   return NextResponse.json({
     ok: true,

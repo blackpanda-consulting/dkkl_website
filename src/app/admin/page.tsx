@@ -6,6 +6,7 @@ import AdminLogin from "@/components/AdminLogin";
 import AdminRateForm from "@/components/AdminRateForm";
 
 export const dynamic = "force-dynamic";
+export const metadata = { robots: { index: false, follow: false } };
 
 const STATUS_STYLES: Record<string, string> = {
   PAID_PENDING_ADMISSION: "bg-success/15 text-success",
