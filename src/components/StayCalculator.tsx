@@ -48,11 +48,14 @@ export default function StayCalculator({ monthlyRatePaise, depositPaise }: Props
   const {
     register,
     handleSubmit,
-    formState: { errors, isValid },
+    formState: { errors, submitCount },
   } = useForm({
     resolver: zodResolver(bookingSchema),
-    mode: "onChange",
+    mode: "onBlur",
   });
+
+  const errorCount = Object.keys(errors).length;
+  const showErrorSummary = submitCount > 0 && errorCount > 0;
 
   const price = useMemo(
     () => computePrice(months, monthlyRatePaise, depositPaise),
@@ -93,7 +96,7 @@ export default function StayCalculator({ monthlyRatePaise, depositPaise }: Props
         description: `Long-term stay — ${months} month(s)`,
         prefill: { name: data.familyName, contact: data.familyMobile },
         notes: { bookingRef: payload.bookingRef },
-        theme: { color: "#b8501f" },
+        theme: { color: "#b84427" },
         handler: async (r: {
           razorpay_order_id: string;
           razorpay_payment_id: string;
@@ -309,13 +312,30 @@ export default function StayCalculator({ monthlyRatePaise, depositPaise }: Props
 
         <p className="mt-4 text-xs leading-relaxed text-muted">{paymentNote}</p>
 
+        {showErrorSummary && (
+          <div
+            role="alert"
+            className="mt-4 flex items-start gap-2 rounded-lg border border-danger/30 bg-danger/10 px-3 py-2.5 text-sm text-danger"
+          >
+            <svg className="mt-0.5 shrink-0" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="10" />
+              <path d="M12 8v4M12 16h.01" />
+            </svg>
+            <span>
+              Please complete the {errorCount} highlighted{" "}
+              {errorCount === 1 ? "field" : "fields"} above to continue.
+            </span>
+          </div>
+        )}
+
         {error && (
           <p className="mt-4 rounded-lg bg-danger/10 px-3 py-2 text-sm text-danger">{error}</p>
         )}
 
         <button
           type="submit"
-          disabled={!isValid || moreThanMax || submitting}
+          disabled={moreThanMax || submitting}
+          aria-disabled={moreThanMax || submitting}
           className="btn-primary mt-5 flex w-full items-center justify-center gap-2 rounded-full px-6 py-4 text-sm font-semibold"
         >
           {submitting ? (
@@ -393,10 +413,18 @@ function Field({
   children: React.ReactNode;
 }) {
   return (
-    <label className="block">
+    <label className={`block ${error ? "field-invalid" : ""}`}>
       <span className="mb-1.5 block text-sm font-medium text-foreground">{label}</span>
       {children}
-      {error && <span className="mt-1 block text-xs text-danger">{error}</span>}
+      {error && (
+        <span className="mt-1 flex items-center gap-1 text-xs text-danger">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+            <circle cx="12" cy="12" r="10" />
+            <path d="M12 8v4M12 16h.01" />
+          </svg>
+          {error}
+        </span>
+      )}
     </label>
   );
 }

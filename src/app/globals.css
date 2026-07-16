@@ -5,22 +5,29 @@
    A deliberately calm, warm, dignified light theme for a sensitive subject.
    --------------------------------------------------------------------------- */
 :root {
-  --background: #fbf7f0; /* warm paper */
+  /* Official brand palette (see brand guidelines). */
+  --background: #fcf9f2; /* cream */
   --surface: #ffffff;
-  --surface-muted: #f5eee2;
-  --foreground: #2a2318; /* warm near-black */
-  --muted: #6f6656;
-  --border: #ece1cf;
-  --accent: #b8501f; /* refined saffron / terracotta */
-  --accent-hover: #9c4118;
-  --accent-soft: #f8ead9;
-  --gold: #c98a2b;
+  --surface-muted: #f5efe2; /* deeper cream */
+  --foreground: #3f342b; /* dark brown */
+  --muted: #756a5c;
+  --border: #ece3d3;
+  --border-strong: #ddceb6;
+  --accent: #b84427; /* terracotta */
+  --accent-hover: #9c3820;
+  --accent-soft: #f7e4da;
+  --teal: #296569; /* brand teal (logo) */
+  --teal-hover: #1f4d50;
+  --teal-soft: #dde9e9;
+  --caramel: #be7132; /* warm ochre */
+  --gold: #e3a737; /* marigold */
+  --gold-soft: #f8e9c6;
   --success: #2f7a4d;
   --danger: #b3261e;
 
-  --shadow-sm: 0 1px 2px rgba(74, 52, 24, 0.06), 0 1px 3px rgba(74, 52, 24, 0.05);
-  --shadow-md: 0 6px 20px -6px rgba(90, 55, 20, 0.14);
-  --shadow-glow: 0 10px 40px -8px rgba(184, 80, 31, 0.35);
+  --shadow-sm: 0 1px 2px rgba(63, 52, 43, 0.06), 0 1px 3px rgba(63, 52, 43, 0.05);
+  --shadow-md: 0 6px 20px -6px rgba(63, 52, 43, 0.16);
+  --shadow-glow: 0 10px 40px -8px rgba(184, 68, 39, 0.35);
 }
 
 @theme inline {
@@ -30,6 +37,12 @@
   --color-foreground: var(--foreground);
   --color-muted: var(--muted);
   --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-gold-soft: var(--gold-soft);
+  --color-teal: var(--teal);
+  --color-teal-hover: var(--teal-hover);
+  --color-teal-soft: var(--teal-soft);
+  --color-caramel: var(--caramel);
   --color-accent: var(--accent);
   --color-accent-hover: var(--accent-hover);
   --color-accent-soft: var(--accent-soft);
@@ -38,7 +51,7 @@
   --color-gold: var(--gold);
   --font-sans: var(--font-sans-custom);
   --font-serif: var(--font-serif-custom);
-  /* "dev font" — map font-display utility to the dev heading serif (Lora). */
+  /* Map the font-display utility to the brand heading serif (EB Garamond). */
   --font-display: var(--font-serif-custom);
 }
 
@@ -81,17 +94,111 @@ html {
     transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
   will-change: opacity, transform;
 }
-.reveal.is-visible { opacity: 1; transform: translateY(0); }
+.reveal.is-visible { opacity: 1; transform: none; }
 .reveal[data-delay="1"] { transition-delay: 0.08s; }
 .reveal[data-delay="2"] { transition-delay: 0.16s; }
 .reveal[data-delay="3"] { transition-delay: 0.24s; }
+/* Directional reveals */
+.reveal-left { transform: translateX(-32px); }
+.reveal-right { transform: translateX(32px); }
+.reveal-zoom { transform: scale(0.94); }
 
 /* Gentle hover lift for cards */
-.lift { transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease; }
+.lift { transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s ease, border-color 0.35s ease; }
 .lift:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 12px 28px -12px rgba(90, 55, 20, 0.22);
+  transform: translateY(-4px);
+  box-shadow: 0 16px 34px -14px rgba(90, 55, 20, 0.28);
 }
+
+/* Image zoom on hover (wrap with a .group parent) */
+.zoom-img { transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1); will-change: transform; }
+.group:hover .zoom-img { transform: scale(1.06); }
+
+/* Slow Ken Burns drift for full-bleed bands */
+@keyframes kenburns {
+  from { transform: scale(1) translate3d(0, 0, 0); }
+  to { transform: scale(1.12) translate3d(-1.5%, -1%, 0); }
+}
+.kenburns { animation: kenburns 24s ease-in-out infinite alternate; }
+
+/* Interactive service tile */
+.service-tile {
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.3s ease,
+    border-color 0.3s ease, background-color 0.3s ease;
+}
+.service-tile:hover {
+  transform: translateY(-4px);
+  border-color: var(--accent);
+  box-shadow: 0 14px 30px -14px rgba(184, 68, 39, 0.35);
+}
+.service-tile .tile-icon {
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.3s ease,
+    color 0.3s ease;
+}
+.service-tile:hover .tile-icon {
+  transform: scale(1.1) rotate(-4deg);
+  background-color: var(--accent);
+  color: #fff;
+}
+
+/* Animated accent under section titles */
+.title-accent {
+  display: block;
+  height: 3px;
+  width: 0;
+  margin: 0.9rem auto 0;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--accent), var(--teal));
+  transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.15s;
+}
+.reveal.is-visible .title-accent { width: 3.5rem; }
+
+/* Faint dotted texture so flat sections aren't so bare */
+.pattern-dots {
+  background-image: radial-gradient(rgba(184, 68, 39, 0.07) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+/* Eyebrow pill above section titles */
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid var(--border-strong);
+  background: var(--surface);
+  color: var(--accent);
+  border-radius: 999px;
+  padding: 0.35rem 0.9rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  box-shadow: var(--shadow-sm);
+}
+.eyebrow::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--gold);
+}
+
+/* Ornamental divider (thin rule + centered diya) */
+.ornament {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  color: var(--gold);
+}
+.ornament::before,
+.ornament::after {
+  content: "";
+  height: 1px;
+  width: min(28vw, 180px);
+  background: linear-gradient(90deg, transparent, var(--border-strong));
+}
+.ornament::after { transform: scaleX(-1); }
 
 /* Smooth accordion (FAQ) */
 .acc-body {
@@ -128,8 +235,8 @@ html {
 
 .hero-sky {
   background:
-    radial-gradient(120% 90% at 85% 10%, rgba(201, 138, 43, 0.18), transparent 50%),
-    linear-gradient(180deg, #fdf3e6 0%, var(--background) 60%);
+    radial-gradient(120% 90% at 85% 10%, rgba(227, 167, 55, 0.16), transparent 50%),
+    linear-gradient(180deg, #fbf2df 0%, var(--background) 60%);
 }
 
 /* Primary button with gentle lift + glow */
@@ -147,6 +254,13 @@ html {
   box-shadow: none;
   transform: none;
   cursor: not-allowed;
+}
+
+/* Invalid form fields (validation feedback) */
+.field-invalid input,
+.field-invalid select {
+  border-color: var(--danger);
+  box-shadow: 0 0 0 3px rgba(179, 38, 30, 0.12);
 }
 
 /* Custom range slider (months) */
@@ -183,5 +297,8 @@ html {
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .enter, .reveal { animation: none; opacity: 1; transform: none; transition: none; }
-  .lift:hover, .card-hover:hover, .btn-primary:hover { transform: none; }
+  .kenburns { animation: none; }
+  .zoom-img, .group:hover .zoom-img { transform: none; }
+  .lift:hover, .card-hover:hover, .btn-primary:hover, .service-tile:hover { transform: none; }
+  .title-accent { width: 3.5rem; transition: none; }
 }

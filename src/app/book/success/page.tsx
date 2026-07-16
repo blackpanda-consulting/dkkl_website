@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { prisma } from "@/lib/db";
 import { formatInr } from "@/lib/pricing";
-import { site } from "@/lib/content";
 
 export const dynamic = "force-dynamic";
 export const metadata = { robots: { index: false, follow: false } };
@@ -57,7 +56,7 @@ export default async function SuccessPage({
         </div>
 
         <p className="mt-6 text-xs text-muted">
-          Questions? Speak to our {site.name} team.
+          Questions? Our team is here to help.
         </p>
       </div>
     </main>

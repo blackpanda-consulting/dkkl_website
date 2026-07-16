@@ -1,16 +1,22 @@
-import type { Metadata } from "next";
-import { Lora, Source_Sans_3 } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import { EB_Garamond, Inter } from "next/font/google";
 import "./globals.css";
 
-const sans = Source_Sans_3({
+export const viewport: Viewport = {
+  themeColor: "#296569",
+};
+
+// Brand fonts: Inter (body) + EB Garamond (headings/display).
+const sans = Inter({
   variable: "--font-sans-custom",
   subsets: ["latin"],
   display: "swap",
 });
 
-const serif = Lora({
+const serif = EB_Garamond({
   variable: "--font-serif-custom",
   subsets: ["latin"],
+  style: ["normal", "italic"],
   display: "swap",
 });
 
@@ -21,11 +27,11 @@ const description =
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Kashi Laabh — Dignified Long-Term Stay in Kashi",
-    template: "%s · Kashi Laabh",
+    default: "Dinesh Kiran Kashi Laabh — Dignified Long-Term Stay in Kashi",
+    template: "%s · Dinesh Kiran Kashi Laabh",
   },
   description,
-  applicationName: "Kashi Laabh",
+  applicationName: "Dinesh Kiran Kashi Laabh",
   keywords: [
     "Kashi Laabh",
     "long-term stay Kashi",
@@ -38,8 +44,8 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",
-    siteName: "Kashi Laabh",
-    title: "Kashi Laabh — Dignified Long-Term Stay in Kashi",
+    siteName: "Dinesh Kiran Kashi Laabh",
+    title: "Dinesh Kiran Kashi Laabh — Dignified Long-Term Stay in Kashi",
     description,
     url: siteUrl,
     locale: "en_IN",
@@ -48,13 +54,13 @@ export const metadata: Metadata = {
         url: "/images/hero.jpg",
         width: 2400,
         height: 1340,
-        alt: "An elderly resident and her daughter looking out over the ghats of Kashi",
+        alt: "An elderly resident and her daughter sitting together at Dinesh Kiran Kashi Laabh",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Kashi Laabh — Dignified Long-Term Stay in Kashi",
+    title: "Dinesh Kiran Kashi Laabh — Dignified Long-Term Stay in Kashi",
     description,
     images: ["/images/hero.jpg"],
   },
