@@ -21,11 +21,11 @@ const description =
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Kashi Laabh — Dignified Long-Term Stay in Kashi",
-    template: "%s · Kashi Laabh",
+    default: "Dinesh Kiran Kashi Laabh — Dignified Long-Term Stay in Kashi",
+    template: "%s · Dinesh Kiran Kashi Laabh",
   },
   description,
-  applicationName: "Kashi Laabh",
+  applicationName: "Dinesh Kiran Kashi Laabh",
   keywords: [
     "Kashi Laabh",
     "long-term stay Kashi",
@@ -38,8 +38,8 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",
-    siteName: "Kashi Laabh",
-    title: "Kashi Laabh — Dignified Long-Term Stay in Kashi",
+    siteName: "Dinesh Kiran Kashi Laabh",
+    title: "Dinesh Kiran Kashi Laabh — Dignified Long-Term Stay in Kashi",
     description,
     url: siteUrl,
     locale: "en_IN",
@@ -48,13 +48,13 @@ export const metadata: Metadata = {
         url: "/images/hero.jpg",
         width: 2400,
         height: 1340,
-        alt: "An elderly resident and her daughter looking out over the ghats of Kashi",
+        alt: "An elderly resident and her daughter sitting together at Dinesh Kiran Kashi Laabh",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Kashi Laabh — Dignified Long-Term Stay in Kashi",
+    title: "Dinesh Kiran Kashi Laabh — Dignified Long-Term Stay in Kashi",
     description,
     images: ["/images/hero.jpg"],
   },

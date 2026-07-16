@@ -149,6 +149,13 @@ html {
   cursor: not-allowed;
 }
 
+/* Invalid form fields (validation feedback) */
+.field-invalid input,
+.field-invalid select {
+  border-color: var(--danger);
+  box-shadow: 0 0 0 3px rgba(179, 38, 30, 0.12);
+}
+
 /* Custom range slider (months) */
 .range {
   -webkit-appearance: none;

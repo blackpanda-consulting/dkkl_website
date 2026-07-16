@@ -11,8 +11,8 @@ export default function TopNav() {
     <header className="sticky top-0 z-40 border-b border-border bg-background/90 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
         <Link href="#home" className="flex flex-col leading-tight">
-          <span className="font-serif text-lg font-semibold text-accent">
-            {site.name}
+          <span className="font-serif text-base font-semibold text-accent sm:text-lg">
+            {site.fullName}
           </span>
           <span className="text-[11px] uppercase tracking-wide text-muted">
             {site.tagline}

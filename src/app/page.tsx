@@ -10,7 +10,6 @@ import {
   hero,
   who,
   includes,
-  responsibility,
   howItWorks,
   faqs,
   footerDisclaimer,
@@ -33,8 +32,9 @@ export default async function Home() {
     "@graph": [
       {
         "@type": "Organization",
-        name: site.name,
-        alternateName: site.legalName,
+        name: site.fullName,
+        legalName: site.fullName,
+        alternateName: site.name,
         url: siteUrl,
         description:
           "Long-term twin-sharing residential accommodation in Kashi (Varanasi) for terminally ill, elderly and frail residents accompanied by a family member or attendant.",
@@ -65,7 +65,7 @@ export default async function Home() {
           <div className="absolute inset-0">
             <Image
               src="/images/hero.jpg"
-              alt="An elderly resident and her daughter looking out over the ghats of Kashi and the river Ganga"
+              alt="An elderly resident and her daughter sitting together at Dinesh Kiran Kashi Laabh in Kashi"
               fill
               priority
               sizes="100vw"
@@ -127,8 +127,8 @@ export default async function Home() {
           <div className="grid items-center gap-8 lg:gap-14 md:grid-cols-2">
             <Photo
               src="/images/room.jpg"
-              alt="A calm twin-sharing room at Kashi Laabh overlooking the ghats"
-              caption="Twin-sharing room · view of the ghats"
+              alt="A calm twin-sharing room at Dinesh Kiran Kashi Laabh"
+              caption="Twin-sharing room"
               ratio="aspect-4/3"
             />
             <div>
@@ -186,7 +186,7 @@ export default async function Home() {
           <div className="relative h-[380px] w-full md:h-[460px]">
             <Image
               src="/images/spiritual.jpg"
-              alt="Sunrise over the ghats of Kashi with floating diyas on the river Ganga"
+              alt="The eternal city of Kashi (Varanasi) at sunrise"
               fill
               sizes="100vw"
               className="object-cover"
@@ -196,27 +196,14 @@ export default async function Home() {
               <div className="mx-auto w-full max-w-6xl px-4 pb-10">
                 <Reveal>
                   <p className="max-w-xl font-serif text-2xl leading-snug text-white md:text-3xl">
-                    Near the ghats, the temples and the Ganga — a place to live the
-                    final phase of life with peace and dignity.
+                    In the eternal city of Kashi — a place to spend the final phase of
+                    life with care, peace and dignity.
                   </p>
                 </Reveal>
               </div>
             </div>
           </div>
         </section>
-
-        {/* RESPONSIBILITY MODEL */}
-        <Section id="responsibility" title={responsibility.heading} tone="muted">
-          <div className="grid items-center gap-8 md:grid-cols-2">
-            <Photo
-              src="/images/support.jpg"
-              alt="A family member holding an elderly resident's hand by a window overlooking the ghats"
-              caption="The family or attendant stays and remains responsible"
-              ratio="aspect-4/3"
-            />
-            <p className="text-lg leading-relaxed text-muted">{responsibility.body}</p>
-          </div>
-        </Section>
 
         {/* HOW IT WORKS */}
         <Section id="how" title={howItWorks.heading}>
@@ -271,7 +258,7 @@ export default async function Home() {
         <div className="mx-auto max-w-4xl px-4 py-10">
           <p className="text-sm leading-relaxed text-muted">{footerDisclaimer}</p>
           <p className="mt-6 text-xs text-muted">
-            © {site.name} · {site.legalName}
+            © {site.fullName}
           </p>
         </div>
       </footer>

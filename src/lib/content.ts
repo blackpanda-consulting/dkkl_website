@@ -2,8 +2,12 @@
 // content can be edited without touching layout. Verbatim from the source doc.
 
 export const site = {
+  // Full official name (DKKL = Dinesh Kiran Kashi Laabh). Used for the site
+  // title, legal lines and structured data.
+  fullName: "Dinesh Kiran Kashi Laabh",
+  // Short brand shown in compact UI (nav wordmark, buttons).
   name: "Kashi Laabh",
-  legalName: "DKKL",
+  legalName: "Dinesh Kiran Kashi Laabh",
   tagline: "Long-term residential stay in Kashi",
   phone: process.env.NEXT_PUBLIC_PHONE ?? "",
   whatsapp: process.env.NEXT_PUBLIC_WHATSAPP ?? "",
@@ -52,7 +56,7 @@ export const includes = {
   roomFeatures: [
     "One room for two — resident + attendant",
     "A calm, home-like space, not a hospital",
-    "Set within walking reach of the ghats",
+    "Set in the holy city of Kashi",
   ],
   supportTitle: "Support we can coordinate",
   supportLead:
