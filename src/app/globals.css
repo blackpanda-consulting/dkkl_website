@@ -62,8 +62,8 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-h1, h2, h3, h4 {
-  font-family: var(--font-serif-custom), Georgia, serif;
+h1, h2, h3, h4, .brand-name {
+  font-family: var(--font-serif-custom), var(--font-devanagari), Georgia, serif;
   letter-spacing: -0.01em;
 }
 

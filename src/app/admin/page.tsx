@@ -37,8 +37,9 @@ export default async function AdminPage() {
 
       <div className="mt-6">
         <AdminRateForm
-          monthlyRateRupees={settings.monthlyRatePaise / 100}
-          depositRupees={settings.depositPaise / 100}
+          singleRateRupees={settings.singleRatePaise / 100}
+          doubleRateRupees={settings.doubleRatePaise / 100}
+          sharedRateRupees={settings.sharedRatePaise / 100}
         />
       </div>
 
@@ -53,6 +54,7 @@ export default async function AdminPage() {
                 <th className="py-2 pr-4">Reference</th>
                 <th className="py-2 pr-4">Resident</th>
                 <th className="py-2 pr-4">Family</th>
+                <th className="py-2 pr-4">Room</th>
                 <th className="py-2 pr-4">Months</th>
                 <th className="py-2 pr-4">Amount</th>
                 <th className="py-2 pr-4">Arrival</th>
@@ -63,7 +65,7 @@ export default async function AdminPage() {
             <tbody>
               {bookings.length === 0 && (
                 <tr>
-                  <td colSpan={8} className="py-6 text-center text-muted">
+                  <td colSpan={9} className="py-6 text-center text-muted">
                     No bookings yet.
                   </td>
                 </tr>
@@ -79,6 +81,7 @@ export default async function AdminPage() {
                     <br />
                     <span className="text-muted">{b.familyMobile}</span>
                   </td>
+                  <td className="py-2.5 pr-4 capitalize">{b.roomType.toLowerCase()}</td>
                   <td className="py-2.5 pr-4">{b.months}</td>
                   <td className="py-2.5 pr-4">{formatInr(b.amountPaise)}</td>
                   <td className="py-2.5 pr-4">{b.arrivalDate.toISOString().slice(0, 10)}</td>

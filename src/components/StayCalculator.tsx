@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -8,19 +8,28 @@ import {
   CONDITION_OPTIONS,
   MOBILITY_OPTIONS,
 } from "@/lib/booking-schema";
-import { computePrice, formatInr, MAX_MONTHS, MIN_MONTHS } from "@/lib/pricing";
-import { useCountUp } from "@/lib/useCountUp";
 import {
-  twinSharingNote,
-  optionalServicesNote,
-  paymentNote,
-  site,
-} from "@/lib/content";
+  computePrice,
+  formatInr,
+  rateForRoom,
+  MAX_MONTHS,
+  MIN_MONTHS,
+  type RoomType,
+} from "@/lib/pricing";
+import { useCountUp } from "@/lib/useCountUp";
+import { optionalServicesNote, paymentNote, site } from "@/lib/content";
 
 type Props = {
-  monthlyRatePaise: number;
-  depositPaise: number;
+  singleRatePaise: number;
+  doubleRatePaise: number;
+  sharedRatePaise: number;
 };
+
+const ROOM_OPTIONS: { key: RoomType; label: string; sub: string }[] = [
+  { key: "SINGLE", label: "Single", sub: "Single occupancy" },
+  { key: "DOUBLE", label: "Double", sub: "Double occupancy" },
+  { key: "SHARED", label: "Shared", sub: "Shared occupancy" },
+];
 
 declare global {
   interface Window {
@@ -39,7 +48,13 @@ function loadRazorpay(): Promise<boolean> {
   });
 }
 
-export default function StayCalculator({ monthlyRatePaise, depositPaise }: Props) {
+export default function StayCalculator({
+  singleRatePaise,
+  doubleRatePaise,
+  sharedRatePaise,
+}: Props) {
+  const rates = { singleRatePaise, doubleRatePaise, sharedRatePaise };
+  const [roomType, setRoomType] = useState<RoomType>("DOUBLE");
   const [months, setMonths] = useState(1);
   const [moreThanMax, setMoreThanMax] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -48,23 +63,29 @@ export default function StayCalculator({ monthlyRatePaise, depositPaise }: Props
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors, submitCount },
   } = useForm({
     resolver: zodResolver(bookingSchema),
     mode: "onBlur",
+    defaultValues: { roomType: "DOUBLE", months: 1 },
   });
+
+  // Keep the non-input values (slider months, room-type buttons) in the form so
+  // the schema validates against real values.
+  useEffect(() => {
+    setValue("months", months);
+  }, [months, setValue]);
+  useEffect(() => {
+    setValue("roomType", roomType);
+  }, [roomType, setValue]);
 
   const errorCount = Object.keys(errors).length;
   const showErrorSummary = submitCount > 0 && errorCount > 0;
 
-  const price = useMemo(
-    () => computePrice(months, monthlyRatePaise, depositPaise),
-    [months, monthlyRatePaise, depositPaise],
-  );
+  const ratePaise = rateForRoom(roomType, rates);
+  const price = useMemo(() => computePrice(months, ratePaise), [months, ratePaise]);
   const animatedTotal = useCountUp(price.totalPaise);
-  const accommodationPct = Math.round(
-    (price.accommodationPaise / price.totalPaise) * 100,
-  );
 
   const wa = site.whatsapp ? `https://wa.me/${site.whatsapp}` : "#contact";
 
@@ -75,7 +96,7 @@ export default function StayCalculator({ monthlyRatePaise, depositPaise }: Props
       const res = await fetch("/api/orders", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...data, months }),
+        body: JSON.stringify({ ...data, months, roomType }),
       });
       const payload = await res.json();
       if (!res.ok) {
@@ -138,13 +159,41 @@ export default function StayCalculator({ monthlyRatePaise, depositPaise }: Props
           )}
           {!moreThanMax && (
             <p className="mt-2 text-sm text-white/80">
-              {months} {months === 1 ? "month" : "months"} · incl. refundable deposit
+              {ROOM_OPTIONS.find((r) => r.key === roomType)?.label} · {months}{" "}
+              {months === 1 ? "month" : "months"}
             </p>
           )}
         </div>
 
         <div className="p-7">
-          <div className="mb-2 flex items-center justify-between">
+          {/* Room type */}
+          <label className="text-sm font-semibold text-foreground">Room type</label>
+          <div className="mt-2 grid grid-cols-3 gap-2.5">
+            {ROOM_OPTIONS.map((r) => {
+              const active = roomType === r.key;
+              const rate = rateForRoom(r.key, rates);
+              return (
+                <button
+                  key={r.key}
+                  type="button"
+                  onClick={() => setRoomType(r.key)}
+                  className={`rounded-2xl border p-3 text-left transition-all ${
+                    active
+                      ? "border-accent bg-accent-soft"
+                      : "border-border bg-surface hover:border-accent/50"
+                  }`}
+                >
+                  <span className="block text-sm font-semibold text-foreground">{r.label}</span>
+                  <span className="block text-[11px] leading-tight text-muted">{r.sub}</span>
+                  <span className="mt-1.5 block text-sm font-semibold text-accent">
+                    {formatInr(rate)}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="mb-2 mt-6 flex items-center justify-between">
             <label className="text-sm font-semibold text-foreground">
               Number of months
             </label>
@@ -221,31 +270,21 @@ export default function StayCalculator({ monthlyRatePaise, depositPaise }: Props
               </a>
             </div>
           ) : (
-            <>
-              <dl className="mt-6 space-y-3 text-sm">
-                <Row label="Monthly accommodation rate" value={formatInr(monthlyRatePaise)} />
-                <Row
-                  label={`Accommodation × ${months} ${months === 1 ? "month" : "months"}`}
-                  value={formatInr(price.accommodationPaise)}
-                />
-                <Row label="Refundable deposit (one-time)" value={formatInr(depositPaise)} />
-              </dl>
-              {/* proportion bar */}
-              <div className="mt-4 flex h-2.5 overflow-hidden rounded-full bg-surface-muted" aria-hidden>
-                <div className="bg-accent transition-all duration-500" style={{ width: `${accommodationPct}%` }} />
-                <div className="bg-gold transition-all duration-500" style={{ width: `${100 - accommodationPct}%` }} />
+            <dl className="mt-6 space-y-3 text-sm">
+              <Row label="Monthly rate" value={formatInr(ratePaise)} />
+              <Row
+                label={`× ${months} ${months === 1 ? "month" : "months"}`}
+                value={formatInr(price.totalPaise)}
+              />
+              <div className="border-t border-border pt-3">
+                <Row label="Total payable now" value={formatInr(price.totalPaise)} strong />
               </div>
-              <div className="mt-2 flex justify-between text-[11px] text-muted">
-                <span className="flex items-center gap-1.5"><Dot className="bg-accent" /> Accommodation</span>
-                <span className="flex items-center gap-1.5"><Dot className="bg-gold" /> Refundable deposit</span>
-              </div>
-            </>
+            </dl>
           )}
 
-          <p className="mt-6 rounded-xl bg-surface-muted p-3.5 text-xs leading-relaxed text-muted">
-            {twinSharingNote}
+          <p className="mt-6 text-xs leading-relaxed text-muted">
+            GST, where applicable, is billed separately. {optionalServicesNote}
           </p>
-          <p className="mt-2 text-xs leading-relaxed text-muted">{optionalServicesNote}</p>
         </div>
       </div>
 
@@ -390,17 +429,27 @@ function StepBtn({ label, onClick, disabled }: { label: string; onClick: () => v
   );
 }
 
-function Row({ label, value }: { label: string; value: string }) {
+function Row({
+  label,
+  value,
+  strong,
+}: {
+  label: string;
+  value: string;
+  strong?: boolean;
+}) {
   return (
     <div className="flex items-center justify-between">
-      <dt className="text-muted">{label}</dt>
-      <dd className="font-semibold text-foreground tabular-nums">{value}</dd>
+      <dt className={strong ? "font-semibold text-foreground" : "text-muted"}>{label}</dt>
+      <dd
+        className={`tabular-nums ${
+          strong ? "text-lg font-bold text-accent" : "font-semibold text-foreground"
+        }`}
+      >
+        {value}
+      </dd>
     </div>
   );
-}
-
-function Dot({ className }: { className: string }) {
-  return <span className={`inline-block h-2 w-2 rounded-full ${className}`} />;
 }
 
 function Field({

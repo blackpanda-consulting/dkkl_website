@@ -5,6 +5,8 @@ import { MAX_MONTHS, MIN_MONTHS } from "./pricing";
 // and the server order route so validation is defined once.
 
 export const bookingSchema = z.object({
+  roomType: z.enum(["SINGLE", "DOUBLE", "SHARED"], { error: "Please choose a room type" }),
+
   months: z.coerce
     .number({ error: "Please select the number of months" })
     .int({ error: "Please select the number of months" })

@@ -13,9 +13,13 @@ datasource db {
 // Singleton row (id = 1) holding admin-editable pricing. Spec §7: the rate must
 // be editable without a code deploy.
 model Setting {
-  id               Int      @id @default(1)
-  monthlyRatePaise Int      @default(3000000) // ₹30,000 example default — DKKL sets the real rate in admin
-  depositPaise     Int      @default(500000)  // ₹5,000 refundable security deposit
+  id              Int @id @default(1)
+  singleRatePaise Int @default(2500000) // ₹25,000 single occupancy
+  doubleRatePaise Int @default(3000000) // ₹30,000 double occupancy
+  sharedRatePaise Int @default(1800000) // ₹18,000 shared occupancy
+  // Legacy columns kept (unused) to avoid destructive drops.
+  monthlyRatePaise Int      @default(3000000)
+  depositPaise     Int      @default(0)
   updatedAt        DateTime @updatedAt
   updatedBy        String?
 }
@@ -38,9 +42,10 @@ model Booking {
   consentAccepted   Boolean
 
   // Pricing snapshot — server-computed at order time (spec §12)
+  roomType         RoomType @default(DOUBLE)
   months           Int
-  monthlyRatePaise Int
-  depositPaise     Int
+  monthlyRatePaise Int // the selected room's monthly rate
+  depositPaise     Int      @default(0) // retained column, no longer used
   amountPaise      Int
 
   // Razorpay
@@ -84,6 +89,13 @@ model Enquiry {
   createdAt     DateTime @default(now())
 
   @@index([createdAt])
+}
+
+enum RoomType {
+  SINGLE
+  DOUBLE
+  SHARED
+  TWIN // legacy value kept to avoid destructive enum change; no longer used
 }
 
 enum Condition {
