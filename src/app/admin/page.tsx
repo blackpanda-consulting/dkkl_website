@@ -22,9 +22,10 @@ export default async function AdminPage() {
     return <AdminLogin />;
   }
 
-  const [settings, bookings] = await Promise.all([
+  const [settings, bookings, enquiries] = await Promise.all([
     getSettings(),
     prisma.booking.findMany({ orderBy: { createdAt: "desc" }, take: 100 }),
+    prisma.enquiry.findMany({ orderBy: { createdAt: "desc" }, take: 100 }),
   ]);
 
   return (
@@ -93,6 +94,45 @@ export default async function AdminPage() {
                   <td className="py-2.5 text-muted">
                     {b.createdAt.toISOString().slice(0, 10)}
                   </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section className="mt-8 rounded-2xl border border-border bg-surface p-6 shadow-sm">
+        <h2 className="text-lg font-semibold text-foreground">
+          Enquiries <span className="text-muted">({enquiries.length})</span>
+        </h2>
+        <div className="mt-4 overflow-x-auto">
+          <table className="w-full min-w-150 text-left text-sm">
+            <thead className="text-xs uppercase tracking-wide text-muted">
+              <tr className="border-b border-border">
+                <th className="py-2 pr-4">Name</th>
+                <th className="py-2 pr-4">Mobile</th>
+                <th className="py-2 pr-4">Email</th>
+                <th className="py-2 pr-4">Preferred</th>
+                <th className="py-2 pr-4">Message</th>
+                <th className="py-2">Received</th>
+              </tr>
+            </thead>
+            <tbody>
+              {enquiries.length === 0 && (
+                <tr>
+                  <td colSpan={6} className="py-6 text-center text-muted">
+                    No enquiries yet.
+                  </td>
+                </tr>
+              )}
+              {enquiries.map((e) => (
+                <tr key={e.id} className="border-b border-border/60 align-top">
+                  <td className="py-2.5 pr-4 font-medium text-foreground">{e.name}</td>
+                  <td className="py-2.5 pr-4">{e.mobile}</td>
+                  <td className="py-2.5 pr-4 text-muted">{e.email ?? "—"}</td>
+                  <td className="py-2.5 pr-4">{e.preferredStay ?? "—"}</td>
+                  <td className="max-w-xs py-2.5 pr-4 text-muted">{e.message ?? "—"}</td>
+                  <td className="py-2.5 text-muted">{e.createdAt.toISOString().slice(0, 10)}</td>
                 </tr>
               ))}
             </tbody>

@@ -2,16 +2,20 @@
 
 import { useEffect, useRef, useState } from "react";
 
-// Reveals children on scroll into view (subtle fade + rise). Respects
-// prefers-reduced-motion via the CSS in globals.css.
+// Reveals children on scroll into view. Supports a direction and an explicit
+// stagger delay. Respects prefers-reduced-motion via the CSS in globals.css.
 export default function Reveal({
   children,
   delay = 0,
+  delayMs,
+  dir = "up",
   as: Tag = "div",
   className = "",
 }: {
   children: React.ReactNode;
   delay?: 0 | 1 | 2 | 3;
+  delayMs?: number;
+  dir?: "up" | "left" | "right" | "zoom";
   as?: React.ElementType;
   className?: string;
 }) {
@@ -34,11 +38,21 @@ export default function Reveal({
     return () => io.disconnect();
   }, []);
 
+  const dirClass =
+    dir === "left"
+      ? "reveal-left"
+      : dir === "right"
+        ? "reveal-right"
+        : dir === "zoom"
+          ? "reveal-zoom"
+          : "";
+
   return (
     <Tag
       ref={ref}
-      data-delay={delay || undefined}
-      className={`reveal ${visible ? "is-visible" : ""} ${className}`}
+      data-delay={delayMs === undefined && delay ? delay : undefined}
+      style={delayMs !== undefined ? { transitionDelay: `${delayMs}ms` } : undefined}
+      className={`reveal ${dirClass} ${visible ? "is-visible" : ""} ${className}`}
     >
       {children}
     </Tag>

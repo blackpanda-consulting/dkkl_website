@@ -4,6 +4,7 @@ import TopNav from "@/components/TopNav";
 import MobileActions from "@/components/MobileActions";
 import Faq from "@/components/Faq";
 import StayCalculator from "@/components/StayCalculator";
+import EnquiryForm from "@/components/EnquiryForm";
 import Reveal from "@/components/Reveal";
 import { getPublicSettings } from "@/lib/settings";
 import {
@@ -114,24 +115,30 @@ export default async function Home() {
         </section>
 
         {/* WHO IT IS FOR */}
-        <Section id="who" title={who.heading} tone="muted">
+        <Section id="who" eyebrow="Eligibility" title={who.heading} tone="muted">
           <div className="grid gap-6 md:grid-cols-2">
-            <EligibilityCard tone="success" title={who.forTitle} items={who.forItems} />
-            <EligibilityCard tone="danger" title={who.notForTitle} items={who.notForItems} />
+            <Reveal dir="left" className="h-full">
+              <EligibilityCard tone="success" title={who.forTitle} items={who.forItems} />
+            </Reveal>
+            <Reveal dir="right" delayMs={80} className="h-full">
+              <EligibilityCard tone="danger" title={who.notForTitle} items={who.notForItems} />
+            </Reveal>
           </div>
         </Section>
 
         {/* WHAT THE STAY INCLUDES */}
-        <Section id="help" title={includes.heading}>
+        <Section id="help" eyebrow="How we help" title={includes.heading}>
           {/* Row 1 — the room */}
           <div className="grid items-center gap-8 lg:gap-14 md:grid-cols-2">
-            <Photo
-              src="/images/room.jpg"
-              alt="A calm twin-sharing room at Dinesh Kiran Kashi Laabh"
-              caption="Twin-sharing room"
-              ratio="aspect-4/3"
-            />
-            <div>
+            <Reveal dir="left">
+              <Photo
+                src="/images/room.jpg"
+                alt="A calm twin-sharing room at Dinesh Kiran Kashi Laabh"
+                caption="Twin-sharing room"
+                ratio="aspect-4/3"
+              />
+            </Reveal>
+            <Reveal dir="right" delayMs={100}>
               <p className="text-xl leading-relaxed text-foreground/90">{includes.body}</p>
               <ul className="mt-7 space-y-3.5">
                 {includes.roomFeatures.map((f) => (
@@ -145,25 +152,26 @@ export default async function Home() {
                   </li>
                 ))}
               </ul>
-            </div>
+            </Reveal>
           </div>
 
           {/* Row 2 — support we coordinate (services grid + photo) */}
           <div className="mt-14 grid items-center gap-8 lg:mt-20 lg:gap-14 md:grid-cols-[1.15fr_0.85fr]">
             <div className="order-2 md:order-1">
-              <h3 className="text-2xl font-semibold text-foreground">{includes.supportTitle}</h3>
-              <p className="mt-2 text-muted">{includes.supportLead}</p>
+              <Reveal dir="left">
+                <h3 className="text-2xl font-semibold text-foreground">{includes.supportTitle}</h3>
+                <p className="mt-2 text-muted">{includes.supportLead}</p>
+              </Reveal>
               <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3">
-                {includes.services.map((s) => (
-                  <div
-                    key={s.label}
-                    className="lift flex flex-col items-start gap-3 rounded-2xl border border-border bg-surface p-4"
-                  >
-                    <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-accent-soft text-accent">
-                      <ServiceIcon name={s.icon} />
-                    </span>
-                    <span className="text-sm font-medium leading-snug text-foreground">{s.label}</span>
-                  </div>
+                {includes.services.map((s, i) => (
+                  <Reveal key={s.label} dir="zoom" delayMs={i * 70} className="h-full">
+                    <div className="service-tile flex h-full flex-col items-start gap-3 rounded-2xl border border-border bg-surface p-4">
+                      <span className="tile-icon flex h-11 w-11 items-center justify-center rounded-xl bg-accent-soft text-accent">
+                        <ServiceIcon name={s.icon} />
+                      </span>
+                      <span className="text-sm font-medium leading-snug text-foreground">{s.label}</span>
+                    </div>
+                  </Reveal>
                 ))}
               </div>
               <p className="mt-5 rounded-xl border border-border bg-surface-muted/60 p-4 text-sm leading-relaxed text-muted">
@@ -171,12 +179,14 @@ export default async function Home() {
               </p>
             </div>
             <div className="order-1 md:order-2">
-              <Photo
-                src="/images/food.jpg"
-                alt="A caregiver helping an elderly resident with a warm vegetarian meal"
-                caption="Everyday care, coordinated locally"
-                ratio="aspect-4/3"
-              />
+              <Reveal dir="right" delayMs={100}>
+                <Photo
+                  src="/images/food.jpg"
+                  alt="A caregiver helping an elderly resident with a warm vegetarian meal"
+                  caption="Everyday care, coordinated locally"
+                  ratio="aspect-4/3"
+                />
+              </Reveal>
             </div>
           </div>
         </Section>
@@ -189,7 +199,7 @@ export default async function Home() {
               alt="The eternal city of Kashi (Varanasi) at sunrise"
               fill
               sizes="100vw"
-              className="object-cover"
+              className="kenburns object-cover"
             />
             <div className="absolute inset-0 bg-linear-to-t from-black/60 via-black/20 to-black/25" />
             <div className="absolute inset-0 flex items-end">
@@ -206,49 +216,67 @@ export default async function Home() {
         </section>
 
         {/* HOW IT WORKS */}
-        <Section id="how" title={howItWorks.heading}>
+        <Section id="how" eyebrow="The journey" title={howItWorks.heading}>
           <ol className="mx-auto grid max-w-4xl gap-4 sm:grid-cols-2">
             {howItWorks.steps.map((step, i) => (
-              <li key={i} className="lift flex gap-4 rounded-xl border border-border bg-surface p-4">
-                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent text-sm font-semibold text-white">
+              <Reveal as="li" key={i} dir="up" delayMs={(i % 2) * 90} className="lift flex gap-4 rounded-xl border border-border bg-surface p-4">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-accent font-display text-sm font-semibold text-white shadow-(--shadow-glow)">
                   {i + 1}
                 </span>
-                <span className="text-foreground/90">{step}</span>
-              </li>
+                <span className="pt-1 text-foreground/90">{step}</span>
+              </Reveal>
             ))}
           </ol>
         </Section>
 
         {/* PRICING / CALCULATOR */}
-        <Section id="pricing" title="Calculate Your Stay Cost" tone="muted">
-          <StayCalculator
-            monthlyRatePaise={settings.monthlyRatePaise}
-            depositPaise={settings.depositPaise}
-          />
+        <Section id="pricing" eyebrow="Stay & pricing" title="Calculate Your Stay Cost" tone="muted">
+          <Reveal dir="zoom">
+            <StayCalculator
+              monthlyRatePaise={settings.monthlyRatePaise}
+              depositPaise={settings.depositPaise}
+            />
+          </Reveal>
         </Section>
 
         {/* FAQ */}
-        <Section id="faqs" title={faqs.heading}>
+        <Section id="faqs" eyebrow="Good to know" title={faqs.heading}>
           <Faq />
         </Section>
 
         {/* CONTACT */}
-        <Section id="contact" title="Speak to Our Kashi Team">
-          <div className="mx-auto flex max-w-xl flex-wrap justify-center gap-3">
-            <a
-              href={tel}
-              className="rounded-full bg-accent px-6 py-3 text-sm font-semibold text-white hover:bg-accent-hover"
-            >
-              Call Our Kashi Team
-            </a>
-            <a
-              href={wa}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="rounded-full border border-border bg-surface px-6 py-3 text-sm font-semibold text-foreground hover:border-accent hover:text-accent"
-            >
-              WhatsApp Us
-            </a>
+        <Section id="contact" eyebrow="Get in touch" title="Speak to Our Kashi Team">
+          <div className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
+            <Reveal dir="left">
+              <EnquiryForm />
+            </Reveal>
+            <Reveal dir="right" delayMs={100}>
+              <div className="space-y-4">
+                <ContactCard
+                  href={tel}
+                  title="Call us"
+                  value={site.phone || "Add a number"}
+                  icon={<PhoneIcon />}
+                />
+                <ContactCard
+                  href={wa}
+                  external
+                  title="WhatsApp"
+                  value="Chat with our Kashi team"
+                  icon={<ChatIcon />}
+                />
+                <div className="relative overflow-hidden rounded-2xl bg-linear-to-br from-accent to-accent-hover p-6 text-white shadow-(--shadow-md)">
+                  <span className="pointer-events-none absolute -right-6 -top-6 h-24 w-24 rounded-full bg-white/10" aria-hidden />
+                  <p className="text-xs font-semibold uppercase tracking-[0.14em] text-white/70">
+                    We&apos;re here for your family
+                  </p>
+                  <p className="mt-2 font-display text-xl font-semibold leading-snug">
+                    Tell us about the resident and we&apos;ll help plan the stay — with
+                    care and no pressure.
+                  </p>
+                </div>
+              </div>
+            </Reveal>
           </div>
         </Section>
       </main>
@@ -273,24 +301,30 @@ export default async function Home() {
 function Section({
   id,
   title,
+  eyebrow,
   tone,
   children,
 }: {
   id: string;
   title: string;
+  eyebrow?: string;
   tone?: "muted";
   children: React.ReactNode;
 }) {
   return (
     <section
       id={id}
-      className={tone === "muted" ? "bg-surface-muted" : "bg-background"}
+      className={`border-t border-border ${
+        tone === "muted" ? "bg-surface-muted pattern-dots" : "bg-background"
+      }`}
     >
-      <div className="mx-auto max-w-6xl px-4 py-14 md:py-20">
-        <Reveal as="h2" className="mb-8 text-center text-2xl font-semibold text-foreground md:text-3xl">
-          {title}
+      <div className="mx-auto max-w-6xl px-4 py-16 md:py-24">
+        <Reveal className="mb-12 flex flex-col items-center text-center">
+          {eyebrow && <span className="eyebrow mb-4">{eyebrow}</span>}
+          <h2 className="text-2xl font-semibold text-foreground md:text-3xl">{title}</h2>
+          <span className="title-accent" aria-hidden />
         </Reveal>
-        <Reveal delay={1}>{children}</Reveal>
+        {children}
       </div>
     </section>
   );
@@ -350,18 +384,19 @@ function Photo({
   ratio?: string;
 }) {
   return (
-    <figure className={`lift relative ${ratio} overflow-hidden rounded-2xl border border-border shadow-sm`}>
+    <figure className={`group lift relative ${ratio} overflow-hidden rounded-2xl border border-border shadow-sm`}>
       <Image
         src={src}
         alt={alt}
         fill
         sizes="(max-width: 768px) 100vw, 50vw"
-        className="object-cover"
+        className="zoom-img object-cover"
       />
       {caption && (
         <>
-          <div className="absolute inset-0 bg-linear-to-t from-black/55 via-transparent to-transparent" />
-          <figcaption className="absolute bottom-3 left-4 right-4 text-sm font-medium text-white drop-shadow">
+          <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent" />
+          <figcaption className="absolute bottom-3 left-4 right-4 flex items-center gap-2 text-sm font-medium text-white drop-shadow">
+            <span className="h-1.5 w-1.5 rounded-full bg-gold" />
             {caption}
           </figcaption>
         </>
@@ -430,5 +465,51 @@ function Stat({ value, label }: { value: string; label: string }) {
       <dt className="font-display text-lg font-semibold text-accent md:text-xl">{value}</dt>
       <dd className="mt-1 text-xs leading-snug text-muted">{label}</dd>
     </div>
+  );
+}
+
+function ContactCard({
+  href,
+  title,
+  value,
+  icon,
+  external,
+}: {
+  href: string;
+  title: string;
+  value: string;
+  icon: React.ReactNode;
+  external?: boolean;
+}) {
+  return (
+    <a
+      href={href}
+      {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+      className="lift group flex items-center gap-4 rounded-2xl border border-border bg-surface p-5 hover:border-accent"
+    >
+      <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-accent-soft text-accent transition-colors group-hover:bg-accent group-hover:text-white">
+        {icon}
+      </span>
+      <span className="min-w-0">
+        <span className="block text-xs font-semibold uppercase tracking-wide text-muted">{title}</span>
+        <span className="block truncate font-medium text-foreground">{value}</span>
+      </span>
+      <span className="ml-auto text-accent transition-transform group-hover:translate-x-1" aria-hidden>→</span>
+    </a>
+  );
+}
+
+function PhoneIcon() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3-8.6A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.6a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.5-1.2a2 2 0 0 1 2.1-.5c.8.3 1.7.6 2.6.7a2 2 0 0 1 1.7 2z" />
+    </svg>
+  );
+}
+function ChatIcon() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 11.5a8.4 8.4 0 0 1-9 8.5 9 9 0 0 1-4-1L3 20l1-4a8.5 8.5 0 1 1 16-4.5z" />
+    </svg>
   );
 }

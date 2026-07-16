@@ -11,10 +11,12 @@
   --foreground: #2a2318; /* warm near-black */
   --muted: #6f6656;
   --border: #ece1cf;
+  --border-strong: #e0d2b8;
   --accent: #b8501f; /* refined saffron / terracotta */
   --accent-hover: #9c4118;
   --accent-soft: #f8ead9;
   --gold: #c98a2b;
+  --gold-soft: #f3e6cd;
   --success: #2f7a4d;
   --danger: #b3261e;
 
@@ -30,6 +32,8 @@
   --color-foreground: var(--foreground);
   --color-muted: var(--muted);
   --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-gold-soft: var(--gold-soft);
   --color-accent: var(--accent);
   --color-accent-hover: var(--accent-hover);
   --color-accent-soft: var(--accent-soft);
@@ -140,6 +144,53 @@ html {
 }
 .reveal.is-visible .title-accent { width: 3.5rem; }
 
+/* Faint dotted texture so flat sections aren't so bare */
+.pattern-dots {
+  background-image: radial-gradient(rgba(184, 80, 31, 0.07) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+/* Eyebrow pill above section titles */
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid var(--border-strong);
+  background: var(--surface);
+  color: var(--accent);
+  border-radius: 999px;
+  padding: 0.35rem 0.9rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  box-shadow: var(--shadow-sm);
+}
+.eyebrow::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--gold);
+}
+
+/* Ornamental divider (thin rule + centered diya) */
+.ornament {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  color: var(--gold);
+}
+.ornament::before,
+.ornament::after {
+  content: "";
+  height: 1px;
+  width: min(28vw, 180px);
+  background: linear-gradient(90deg, transparent, var(--border-strong));
+}
+.ornament::after { transform: scaleX(-1); }
+
 /* Smooth accordion (FAQ) */
 .acc-body {
   display: grid;
@@ -237,5 +288,8 @@ html {
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .enter, .reveal { animation: none; opacity: 1; transform: none; transition: none; }
-  .lift:hover, .card-hover:hover, .btn-primary:hover { transform: none; }
+  .kenburns { animation: none; }
+  .zoom-img, .group:hover .zoom-img { transform: none; }
+  .lift:hover, .card-hover:hover, .btn-primary:hover, .service-tile:hover { transform: none; }
+  .title-accent { width: 3.5rem; transition: none; }
 }
