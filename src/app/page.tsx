@@ -209,11 +209,17 @@ export default async function Home() {
           </div>
         </section>
 
-        {/* HOW IT WORKS */}
+        {/* HOW IT WORKS — step grid */}
         <Section id="how" eyebrow="The journey" title={howItWorks.heading}>
           <ol className="mx-auto grid max-w-4xl gap-4 sm:grid-cols-2">
             {howItWorks.steps.map((step, i) => (
-              <Reveal as="li" key={i} dir="up" delayMs={(i % 2) * 90} className="lift flex gap-4 rounded-xl border border-border bg-surface p-4">
+              <Reveal
+                as="li"
+                key={i}
+                dir="up"
+                delayMs={(i % 2) * 90}
+                className="lift flex gap-4 rounded-2xl border border-border bg-surface p-5 shadow-sm"
+              >
                 <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-accent font-display text-sm font-semibold text-white shadow-(--shadow-glow)">
                   {i + 1}
                 </span>

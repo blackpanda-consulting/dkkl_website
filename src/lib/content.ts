@@ -116,8 +116,8 @@ export const howItWorks = {
   heading: "How It Works",
   steps: [
     "Confirm that the resident fits the eligibility criteria.",
-    "Select the expected number of months of stay.",
-    "View the accommodation amount and refundable security deposit.",
+    "Choose an occupancy type and the expected number of months of stay.",
+    "View the total accommodation amount for your chosen room.",
     "Enter resident and family details.",
     "Accept the responsibility, cancellation and refund terms.",
     "Continue to Razorpay and complete payment.",
