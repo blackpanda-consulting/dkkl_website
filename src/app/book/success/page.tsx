@@ -4,6 +4,7 @@ import { formatInr } from "@/lib/pricing";
 import { site } from "@/lib/content";
 
 export const dynamic = "force-dynamic";
+export const metadata = { robots: { index: false, follow: false } };
 
 // searchParams is async in Next 16.
 export default async function SuccessPage({

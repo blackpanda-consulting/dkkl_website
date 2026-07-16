@@ -49,9 +49,24 @@ export const who = {
 export const includes = {
   heading: "Stay Together. Pay for One Twin-Sharing Room.",
   body: "The resident and one accompanying family member or personal attendant can stay together in a twin-sharing room for the cost of one room.",
+  roomFeatures: [
+    "One room for two — resident + attendant",
+    "A calm, home-like space, not a hospital",
+    "Set within walking reach of the ghats",
+  ],
   supportTitle: "Support we can coordinate",
-  support:
-    "Our team can help coordinate vegetarian food, hospital visits, temple visits, local transport and practical end-of-life arrangements. Nursing, medical consultations, additional attendants, transport and other services may be arranged separately and charged according to actual requirements.",
+  supportLead:
+    "Our local team is with your family for the everyday things that matter most.",
+  // Scannable services (icon keys map to icons in the UI).
+  services: [
+    { icon: "food", label: "Vegetarian food" },
+    { icon: "hospital", label: "Hospital visits" },
+    { icon: "temple", label: "Temple visits" },
+    { icon: "transport", label: "Local transport" },
+    { icon: "lotus", label: "End-of-life arrangements" },
+  ],
+  servicesNote:
+    "Nursing, medical consultations, additional attendants, transport and other services may be arranged separately and charged according to actual requirements.",
 };
 
 export const responsibility = {

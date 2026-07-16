@@ -5,11 +5,11 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   bookingSchema,
-  type BookingInput,
   CONDITION_OPTIONS,
   MOBILITY_OPTIONS,
 } from "@/lib/booking-schema";
-import { computePrice, formatInr, MAX_MONTHS } from "@/lib/pricing";
+import { computePrice, formatInr, MAX_MONTHS, MIN_MONTHS } from "@/lib/pricing";
+import { useCountUp } from "@/lib/useCountUp";
 import {
   twinSharingNote,
   optionalServicesNote,
@@ -45,8 +45,6 @@ export default function StayCalculator({ monthlyRatePaise, depositPaise }: Props
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Let RHF infer input/output types from the resolver. z.coerce fields have an
-  // `unknown` input type, so an explicit output generic here would not match.
   const {
     register,
     handleSubmit,
@@ -60,10 +58,14 @@ export default function StayCalculator({ monthlyRatePaise, depositPaise }: Props
     () => computePrice(months, monthlyRatePaise, depositPaise),
     [months, monthlyRatePaise, depositPaise],
   );
+  const animatedTotal = useCountUp(price.totalPaise);
+  const accommodationPct = Math.round(
+    (price.accommodationPaise / price.totalPaise) * 100,
+  );
 
   const wa = site.whatsapp ? `https://wa.me/${site.whatsapp}` : "#contact";
 
-  async function onSubmit(data: BookingInput) {
+  async function onSubmit(data: Record<string, unknown>) {
     setError(null);
     setSubmitting(true);
     try {
@@ -91,13 +93,12 @@ export default function StayCalculator({ monthlyRatePaise, depositPaise }: Props
         description: `Long-term stay — ${months} month(s)`,
         prefill: { name: data.familyName, contact: data.familyMobile },
         notes: { bookingRef: payload.bookingRef },
-        theme: { color: "#a8471f" },
+        theme: { color: "#b8501f" },
         handler: async (r: {
           razorpay_order_id: string;
           razorpay_payment_id: string;
           razorpay_signature: string;
         }) => {
-          // Optimistic client verification; the webhook is authoritative.
           await fetch("/api/verify", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -107,9 +108,7 @@ export default function StayCalculator({ monthlyRatePaise, depositPaise }: Props
             payload.bookingRef,
           )}&status=success`;
         },
-        modal: {
-          ondismiss: () => setSubmitting(false),
-        },
+        modal: { ondismiss: () => setSubmitting(false) },
       });
       rzp.open();
     } catch (e) {
@@ -119,98 +118,157 @@ export default function StayCalculator({ monthlyRatePaise, depositPaise }: Props
   }
 
   return (
-    <div className="mx-auto grid max-w-5xl gap-6 lg:grid-cols-[0.9fr_1.1fr]">
-      {/* ---- Left: calculator summary ---- */}
-      <div className="rounded-2xl border border-border bg-surface p-6 shadow-sm">
-        <h3 className="text-lg font-semibold text-foreground">Calculate Stay Cost</h3>
-
-        <label className="mt-5 block text-sm font-medium text-foreground">
-          Number of months
-        </label>
-        <div className="mt-2 flex items-center gap-3">
-          <select
-            value={moreThanMax ? "more" : months}
-            onChange={(e) => {
-              if (e.target.value === "more") {
-                setMoreThanMax(true);
-              } else {
-                setMoreThanMax(false);
-                setMonths(Number(e.target.value));
-              }
-            }}
-            className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-foreground focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/30"
-          >
-            {Array.from({ length: MAX_MONTHS }, (_, i) => i + 1).map((m) => (
-              <option key={m} value={m}>
-                {m} {m === 1 ? "month" : "months"}
-              </option>
-            ))}
-            <option value="more">More than {MAX_MONTHS} months</option>
-          </select>
+    <div className="mx-auto grid max-w-5xl gap-6 lg:grid-cols-[0.95fr_1.05fr]">
+      {/* ---------------- Left: interactive calculator ---------------- */}
+      <div className="card overflow-hidden p-0">
+        {/* Animated total header */}
+        <div className="bg-linear-to-br from-accent to-accent-hover px-7 py-8 text-white">
+          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-white/70">
+            {moreThanMax ? "Long stay" : "Total payable now"}
+          </p>
+          {moreThanMax ? (
+            <p className="mt-2 font-display text-3xl font-semibold">Let&apos;s talk</p>
+          ) : (
+            <p className="mt-1 font-display text-4xl font-semibold tabular-nums md:text-5xl">
+              {formatInr(animatedTotal)}
+            </p>
+          )}
+          {!moreThanMax && (
+            <p className="mt-2 text-sm text-white/80">
+              {months} {months === 1 ? "month" : "months"} · incl. refundable deposit
+            </p>
+          )}
         </div>
 
-        {moreThanMax ? (
-          <div className="mt-6 rounded-xl bg-accent-soft p-4 text-sm text-foreground">
-            <p className="font-medium">Stays over {MAX_MONTHS} months</p>
-            <p className="mt-1 text-muted">
-              Please contact our Kashi team so we can plan a longer stay with you.
-            </p>
-            <a
-              href={wa}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-3 inline-block rounded-full bg-accent px-5 py-2 text-sm font-semibold text-white hover:bg-accent-hover"
-            >
-              Request a callback
-            </a>
+        <div className="p-7">
+          <div className="mb-2 flex items-center justify-between">
+            <label className="text-sm font-semibold text-foreground">
+              Number of months
+            </label>
+            <Stepper months={months} onChange={setMonths} disabled={moreThanMax} />
           </div>
-        ) : (
-          <dl className="mt-6 space-y-3 text-sm">
-            <Row label="Monthly accommodation rate" value={formatInr(monthlyRatePaise)} />
-            <Row
-              label={`Accommodation × ${months} ${months === 1 ? "month" : "months"}`}
-              value={formatInr(price.accommodationPaise)}
-            />
-            <Row
-              label="Refundable security deposit (one-time)"
-              value={formatInr(depositPaise)}
-            />
-            <div className="border-t border-border pt-3">
-              <Row label="Total payable now" value={formatInr(price.totalPaise)} strong />
-            </div>
-          </dl>
-        )}
 
-        <p className="mt-5 rounded-lg bg-surface-muted p-3 text-xs leading-relaxed text-muted">
-          {twinSharingNote}
-        </p>
-        <p className="mt-2 text-xs leading-relaxed text-muted">{optionalServicesNote}</p>
+          <input
+            type="range"
+            min={MIN_MONTHS}
+            max={MAX_MONTHS}
+            value={months}
+            disabled={moreThanMax}
+            onChange={(e) => setMonths(Number(e.target.value))}
+            className="range mt-3 disabled:opacity-40"
+            style={{
+              background: moreThanMax
+                ? "var(--border)"
+                : `linear-gradient(90deg, var(--accent) ${
+                    ((months - 1) / (MAX_MONTHS - 1)) * 100
+                  }%, var(--surface-muted) ${((months - 1) / (MAX_MONTHS - 1)) * 100}%)`,
+            }}
+            aria-label="Number of months"
+          />
+          <div className="mt-1 flex justify-between text-[11px] text-muted">
+            <span>1 mo</span>
+            <span>{MAX_MONTHS} mo</span>
+          </div>
+
+          {/* quick chips */}
+          <div className="mt-4 flex flex-wrap gap-2">
+            {[1, 3, 6, 12].map((m) => (
+              <button
+                key={m}
+                type="button"
+                onClick={() => {
+                  setMoreThanMax(false);
+                  setMonths(m);
+                }}
+                className={`rounded-full px-3.5 py-1.5 text-xs font-medium transition-colors ${
+                  !moreThanMax && months === m
+                    ? "bg-accent text-white"
+                    : "bg-surface-muted text-foreground/70 hover:text-accent"
+                }`}
+              >
+                {m} mo
+              </button>
+            ))}
+            <button
+              type="button"
+              onClick={() => setMoreThanMax((v) => !v)}
+              className={`rounded-full px-3.5 py-1.5 text-xs font-medium transition-colors ${
+                moreThanMax
+                  ? "bg-accent text-white"
+                  : "bg-surface-muted text-foreground/70 hover:text-accent"
+              }`}
+            >
+              24+ mo
+            </button>
+          </div>
+
+          {moreThanMax ? (
+            <div className="mt-6 rounded-2xl bg-accent-soft p-5 text-sm">
+              <p className="font-semibold text-foreground">Planning a stay over {MAX_MONTHS} months?</p>
+              <p className="mt-1 text-muted">
+                Please contact our Kashi team so we can plan a longer stay with you.
+              </p>
+              <a
+                href={wa}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-primary mt-4 inline-block rounded-full px-5 py-2.5 text-sm font-semibold"
+              >
+                Request a callback
+              </a>
+            </div>
+          ) : (
+            <>
+              <dl className="mt-6 space-y-3 text-sm">
+                <Row label="Monthly accommodation rate" value={formatInr(monthlyRatePaise)} />
+                <Row
+                  label={`Accommodation × ${months} ${months === 1 ? "month" : "months"}`}
+                  value={formatInr(price.accommodationPaise)}
+                />
+                <Row label="Refundable deposit (one-time)" value={formatInr(depositPaise)} />
+              </dl>
+              {/* proportion bar */}
+              <div className="mt-4 flex h-2.5 overflow-hidden rounded-full bg-surface-muted" aria-hidden>
+                <div className="bg-accent transition-all duration-500" style={{ width: `${accommodationPct}%` }} />
+                <div className="bg-gold transition-all duration-500" style={{ width: `${100 - accommodationPct}%` }} />
+              </div>
+              <div className="mt-2 flex justify-between text-[11px] text-muted">
+                <span className="flex items-center gap-1.5"><Dot className="bg-accent" /> Accommodation</span>
+                <span className="flex items-center gap-1.5"><Dot className="bg-gold" /> Refundable deposit</span>
+              </div>
+            </>
+          )}
+
+          <p className="mt-6 rounded-xl bg-surface-muted p-3.5 text-xs leading-relaxed text-muted">
+            {twinSharingNote}
+          </p>
+          <p className="mt-2 text-xs leading-relaxed text-muted">{optionalServicesNote}</p>
+        </div>
       </div>
 
-      {/* ---- Right: details form + consent + CTA ---- */}
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="rounded-2xl border border-border bg-surface p-6 shadow-sm"
-      >
-        <h3 className="text-lg font-semibold text-foreground">Resident &amp; family details</h3>
+      {/* ---------------- Right: details + consent + CTA ---------------- */}
+      <form onSubmit={handleSubmit(onSubmit)} className="card p-7">
+        <h3 className="font-display text-lg font-semibold text-foreground">
+          Resident &amp; family details
+        </h3>
         <p className="mt-1 text-sm text-muted">
           Required before payment. Our team uses these to plan arrival and support.
         </p>
 
-        <div className="mt-5 grid gap-4 sm:grid-cols-2">
-          <Field label="Family contact name" error={errors.familyName?.message}>
+        <div className="mt-6 grid gap-4 sm:grid-cols-2">
+          <Field label="Family contact name" error={errors.familyName?.message as string}>
             <input {...register("familyName")} className={inputCls} autoComplete="name" />
           </Field>
-          <Field label="Family mobile number" error={errors.familyMobile?.message}>
+          <Field label="Family mobile number" error={errors.familyMobile?.message as string}>
             <input {...register("familyMobile")} className={inputCls} inputMode="tel" />
           </Field>
-          <Field label="Resident name" error={errors.residentName?.message}>
+          <Field label="Resident name" error={errors.residentName?.message as string}>
             <input {...register("residentName")} className={inputCls} />
           </Field>
-          <Field label="Resident age" error={errors.residentAge?.message}>
+          <Field label="Resident age" error={errors.residentAge?.message as string}>
             <input {...register("residentAge")} type="number" min={0} max={120} className={inputCls} />
           </Field>
-          <Field label="Current condition" error={errors.condition?.message}>
+          <Field label="Current condition" error={errors.condition?.message as string}>
             <select {...register("condition")} defaultValue="" className={inputCls}>
               <option value="" disabled>Select…</option>
               {CONDITION_OPTIONS.map((o) => (
@@ -218,7 +276,7 @@ export default function StayCalculator({ monthlyRatePaise, depositPaise }: Props
               ))}
             </select>
           </Field>
-          <Field label="Mobility" error={errors.mobility?.message}>
+          <Field label="Mobility" error={errors.mobility?.message as string}>
             <select {...register("mobility")} defaultValue="" className={inputCls}>
               <option value="" disabled>Select…</option>
               {MOBILITY_OPTIONS.map((o) => (
@@ -226,22 +284,24 @@ export default function StayCalculator({ monthlyRatePaise, depositPaise }: Props
               ))}
             </select>
           </Field>
-          <Field label="Expected arrival date" error={errors.arrivalDate?.message}>
+          <Field label="Expected arrival date" error={errors.arrivalDate?.message as string}>
             <input {...register("arrivalDate")} type="date" className={inputCls} />
           </Field>
-          <Field label="Attendant name" error={errors.attendantName?.message}>
+          <Field label="Attendant name" error={errors.attendantName?.message as string}>
             <input {...register("attendantName")} className={inputCls} />
           </Field>
-          <Field label="Attendant relationship" error={errors.attendantRelation?.message}>
-            <input {...register("attendantRelation")} className={inputCls} placeholder="e.g. Son, Daughter, Nurse" />
-          </Field>
+          <div className="sm:col-span-2">
+            <Field label="Attendant relationship" error={errors.attendantRelation?.message as string}>
+              <input {...register("attendantRelation")} className={inputCls} placeholder="e.g. Son, Daughter, Nurse" />
+            </Field>
+          </div>
         </div>
 
-        <div className="mt-5 space-y-3">
-          <Checkbox {...register("longTermConfirmed")} error={errors.longTermConfirmed?.message}>
+        <div className="mt-5 space-y-3 rounded-2xl bg-surface-muted p-4">
+          <Checkbox {...register("longTermConfirmed")} error={errors.longTermConfirmed?.message as string}>
             I confirm this is a long-term stay and not tourist accommodation.
           </Checkbox>
-          <Checkbox {...register("consentAccepted")} error={errors.consentAccepted?.message}>
+          <Checkbox {...register("consentAccepted")} error={errors.consentAccepted?.message as string}>
             I accept the responsibility, cancellation, refund and privacy terms.{" "}
             <a href="/terms" target="_blank" className="text-accent underline">Read terms</a>.
           </Checkbox>
@@ -256,14 +316,18 @@ export default function StayCalculator({ monthlyRatePaise, depositPaise }: Props
         <button
           type="submit"
           disabled={!isValid || moreThanMax || submitting}
-          className="mt-5 w-full rounded-full bg-accent px-6 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-50"
+          className="btn-primary mt-5 flex w-full items-center justify-center gap-2 rounded-full px-6 py-4 text-sm font-semibold"
         >
-          {submitting
-            ? "Starting secure payment…"
-            : `Proceed to Secure Payment · ${formatInr(price.totalPaise)}`}
+          {submitting ? (
+            <>
+              <Spinner /> Starting secure payment…
+            </>
+          ) : (
+            <>🔒 Proceed to Secure Payment · {formatInr(price.totalPaise)}</>
+          )}
         </button>
-        <p className="mt-2 text-center text-xs text-muted">
-          Payments are processed securely by Razorpay.
+        <p className="mt-2.5 flex items-center justify-center gap-1.5 text-center text-xs text-muted">
+          Payments processed securely by Razorpay
         </p>
       </form>
     </div>
@@ -271,15 +335,52 @@ export default function StayCalculator({ monthlyRatePaise, depositPaise }: Props
 }
 
 const inputCls =
-  "w-full rounded-lg border border-border bg-background px-3 py-2 text-foreground focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/30";
+  "w-full rounded-xl border border-border bg-background px-3.5 py-2.5 text-foreground transition-colors focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/25";
 
-function Row({ label, value, strong }: { label: string; value: string; strong?: boolean }) {
+function Stepper({
+  months,
+  onChange,
+  disabled,
+}: {
+  months: number;
+  onChange: (m: number) => void;
+  disabled?: boolean;
+}) {
   return (
-    <div className="flex items-center justify-between">
-      <dt className={strong ? "font-semibold text-foreground" : "text-muted"}>{label}</dt>
-      <dd className={strong ? "text-lg font-bold text-accent" : "font-medium text-foreground"}>{value}</dd>
+    <div className={`flex items-center gap-1 ${disabled ? "opacity-40" : ""}`}>
+      <StepBtn label="−" onClick={() => onChange(Math.max(MIN_MONTHS, months - 1))} disabled={disabled || months <= MIN_MONTHS} />
+      <span className="w-8 text-center font-display text-lg font-semibold text-foreground tabular-nums">
+        {months}
+      </span>
+      <StepBtn label="+" onClick={() => onChange(Math.min(MAX_MONTHS, months + 1))} disabled={disabled || months >= MAX_MONTHS} />
     </div>
   );
+}
+
+function StepBtn({ label, onClick, disabled }: { label: string; onClick: () => void; disabled?: boolean }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      className="flex h-8 w-8 items-center justify-center rounded-lg border border-border bg-surface text-lg text-foreground transition-colors hover:border-accent hover:text-accent disabled:opacity-30"
+    >
+      {label}
+    </button>
+  );
+}
+
+function Row({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex items-center justify-between">
+      <dt className="text-muted">{label}</dt>
+      <dd className="font-semibold text-foreground tabular-nums">{value}</dd>
+    </div>
+  );
+}
+
+function Dot({ className }: { className: string }) {
+  return <span className={`inline-block h-2 w-2 rounded-full ${className}`} />;
 }
 
 function Field({
@@ -293,7 +394,7 @@ function Field({
 }) {
   return (
     <label className="block">
-      <span className="mb-1 block text-sm font-medium text-foreground">{label}</span>
+      <span className="mb-1.5 block text-sm font-medium text-foreground">{label}</span>
       {children}
       {error && <span className="mt-1 block text-xs text-danger">{error}</span>}
     </label>
@@ -315,3 +416,12 @@ const Checkbox = function Checkbox({
     </div>
   );
 };
+
+function Spinner() {
+  return (
+    <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="10" stroke="currentColor" strokeOpacity="0.3" strokeWidth="3" />
+      <path d="M22 12a10 10 0 0 1-10 10" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+    </svg>
+  );
+}

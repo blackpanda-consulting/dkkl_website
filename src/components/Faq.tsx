@@ -16,11 +16,11 @@ export default function Faq() {
               type="button"
               onClick={() => setOpen(isOpen ? null : i)}
               aria-expanded={isOpen}
-              className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left"
+              className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left transition-colors hover:text-accent"
             >
               <span className="font-medium text-foreground">{item.q}</span>
               <span
-                className={`shrink-0 text-accent transition-transform ${isOpen ? "rotate-45" : ""}`}
+                className={`shrink-0 text-accent transition-transform duration-300 ${isOpen ? "rotate-45" : ""}`}
                 aria-hidden
               >
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
@@ -28,9 +28,11 @@ export default function Faq() {
                 </svg>
               </span>
             </button>
-            {isOpen && (
-              <p className="px-5 pb-5 text-muted">{item.a}</p>
-            )}
+            <div className={`acc-body ${isOpen ? "open" : ""}`}>
+              <div>
+                <p className="px-5 pb-5 text-muted">{item.a}</p>
+              </div>
+            </div>
           </div>
         );
       })}

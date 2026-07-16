@@ -5,17 +5,22 @@
    A deliberately calm, warm, dignified light theme for a sensitive subject.
    --------------------------------------------------------------------------- */
 :root {
-  --background: #fbf8f3; /* warm paper */
+  --background: #fbf7f0; /* warm paper */
   --surface: #ffffff;
-  --surface-muted: #f4efe6;
-  --foreground: #2b2620; /* soft near-black */
-  --muted: #6b6459;
-  --border: #e7dfd1;
-  --accent: #a8471f; /* deep saffron / terracotta */
-  --accent-hover: #8f3c19;
-  --accent-soft: #f7ecdf;
+  --surface-muted: #f5eee2;
+  --foreground: #2a2318; /* warm near-black */
+  --muted: #6f6656;
+  --border: #ece1cf;
+  --accent: #b8501f; /* refined saffron / terracotta */
+  --accent-hover: #9c4118;
+  --accent-soft: #f8ead9;
+  --gold: #c98a2b;
   --success: #2f7a4d;
   --danger: #b3261e;
+
+  --shadow-sm: 0 1px 2px rgba(74, 52, 24, 0.06), 0 1px 3px rgba(74, 52, 24, 0.05);
+  --shadow-md: 0 6px 20px -6px rgba(90, 55, 20, 0.14);
+  --shadow-glow: 0 10px 40px -8px rgba(184, 80, 31, 0.35);
 }
 
 @theme inline {
@@ -30,8 +35,11 @@
   --color-accent-soft: var(--accent-soft);
   --color-success: var(--success);
   --color-danger: var(--danger);
+  --color-gold: var(--gold);
   --font-sans: var(--font-sans-custom);
   --font-serif: var(--font-serif-custom);
+  /* "dev font" — map font-display utility to the dev heading serif (Lora). */
+  --font-display: var(--font-serif-custom);
 }
 
 body {
@@ -50,6 +58,130 @@ html {
   scroll-behavior: smooth;
   scroll-padding-top: 5rem;
 }
+
+/* ---------------------------------------------------------------------------
+   Motion — subtle and tasteful only.
+   --------------------------------------------------------------------------- */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Load-in entrance (hero) */
+.enter { animation: fadeUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.enter-1 { animation-delay: 0.08s; }
+.enter-2 { animation-delay: 0.16s; }
+.enter-3 { animation-delay: 0.24s; }
+
+/* Scroll reveal (toggled by IntersectionObserver via .is-visible) */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+.reveal.is-visible { opacity: 1; transform: translateY(0); }
+.reveal[data-delay="1"] { transition-delay: 0.08s; }
+.reveal[data-delay="2"] { transition-delay: 0.16s; }
+.reveal[data-delay="3"] { transition-delay: 0.24s; }
+
+/* Gentle hover lift for cards */
+.lift { transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease; }
+.lift:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px -12px rgba(90, 55, 20, 0.22);
+}
+
+/* Smooth accordion (FAQ) */
+.acc-body {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.acc-body.open { grid-template-rows: 1fr; }
+.acc-body > div { overflow: hidden; }
+
+/* ---------------------------------------------------------------------------
+   Surfaces & controls (used by the interactive calculator / form).
+   --------------------------------------------------------------------------- */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 1.25rem;
+  box-shadow: var(--shadow-sm);
+}
+.card-hover {
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+.card-hover:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+
+.text-gradient {
+  background: linear-gradient(100deg, var(--accent) 0%, var(--gold) 60%, var(--accent) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.hero-sky {
+  background:
+    radial-gradient(120% 90% at 85% 10%, rgba(201, 138, 43, 0.18), transparent 50%),
+    linear-gradient(180deg, #fdf3e6 0%, var(--background) 60%);
+}
+
+/* Primary button with gentle lift + glow */
+.btn-primary {
+  background: linear-gradient(180deg, var(--accent), var(--accent-hover));
+  color: #fff;
+  box-shadow: var(--shadow-glow);
+  transition: transform 0.2s ease, box-shadow 0.25s ease, filter 0.2s ease;
+}
+.btn-primary:hover { transform: translateY(-2px); filter: brightness(1.05); }
+.btn-primary:active { transform: translateY(0); }
+.btn-primary:disabled {
+  filter: grayscale(0.4);
+  opacity: 0.55;
+  box-shadow: none;
+  transform: none;
+  cursor: not-allowed;
+}
+
+/* Custom range slider (months) */
+.range {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 8px;
+  border-radius: 999px;
+  outline: none;
+  cursor: pointer;
+}
+.range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 3px solid var(--accent);
+  box-shadow: var(--shadow-glow);
+  transition: transform 0.15s ease;
+}
+.range::-webkit-slider-thumb:hover { transform: scale(1.12); }
+.range::-moz-range-thumb {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 3px solid var(--accent);
+  box-shadow: var(--shadow-glow);
+}
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
+  .enter, .reveal { animation: none; opacity: 1; transform: none; transition: none; }
+  .lift:hover, .card-hover:hover, .btn-primary:hover { transform: none; }
 }
