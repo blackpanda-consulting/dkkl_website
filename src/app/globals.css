@@ -81,17 +81,64 @@ html {
     transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
   will-change: opacity, transform;
 }
-.reveal.is-visible { opacity: 1; transform: translateY(0); }
+.reveal.is-visible { opacity: 1; transform: none; }
 .reveal[data-delay="1"] { transition-delay: 0.08s; }
 .reveal[data-delay="2"] { transition-delay: 0.16s; }
 .reveal[data-delay="3"] { transition-delay: 0.24s; }
+/* Directional reveals */
+.reveal-left { transform: translateX(-32px); }
+.reveal-right { transform: translateX(32px); }
+.reveal-zoom { transform: scale(0.94); }
 
 /* Gentle hover lift for cards */
-.lift { transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease; }
+.lift { transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s ease, border-color 0.35s ease; }
 .lift:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 12px 28px -12px rgba(90, 55, 20, 0.22);
+  transform: translateY(-4px);
+  box-shadow: 0 16px 34px -14px rgba(90, 55, 20, 0.28);
 }
+
+/* Image zoom on hover (wrap with a .group parent) */
+.zoom-img { transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1); will-change: transform; }
+.group:hover .zoom-img { transform: scale(1.06); }
+
+/* Slow Ken Burns drift for full-bleed bands */
+@keyframes kenburns {
+  from { transform: scale(1) translate3d(0, 0, 0); }
+  to { transform: scale(1.12) translate3d(-1.5%, -1%, 0); }
+}
+.kenburns { animation: kenburns 24s ease-in-out infinite alternate; }
+
+/* Interactive service tile */
+.service-tile {
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.3s ease,
+    border-color 0.3s ease, background-color 0.3s ease;
+}
+.service-tile:hover {
+  transform: translateY(-4px);
+  border-color: var(--accent);
+  box-shadow: 0 14px 30px -14px rgba(184, 80, 31, 0.35);
+}
+.service-tile .tile-icon {
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.3s ease,
+    color 0.3s ease;
+}
+.service-tile:hover .tile-icon {
+  transform: scale(1.1) rotate(-4deg);
+  background-color: var(--accent);
+  color: #fff;
+}
+
+/* Animated accent under section titles */
+.title-accent {
+  display: block;
+  height: 3px;
+  width: 0;
+  margin: 0.9rem auto 0;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--accent), var(--gold));
+  transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.15s;
+}
+.reveal.is-visible .title-accent { width: 3.5rem; }
 
 /* Smooth accordion (FAQ) */
 .acc-body {

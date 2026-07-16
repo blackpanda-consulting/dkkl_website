@@ -34,7 +34,7 @@ export default async function Home() {
         "@type": "Organization",
         name: site.fullName,
         legalName: site.fullName,
-        alternateName: site.name,
+        alternateName: "Kashi Laabh",
         url: siteUrl,
         description:
           "Long-term twin-sharing residential accommodation in Kashi (Varanasi) for terminally ill, elderly and frail residents accompanied by a family member or attendant.",
