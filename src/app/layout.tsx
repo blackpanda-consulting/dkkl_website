@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { EB_Garamond, Inter } from "next/font/google";
+import { EB_Garamond, Inter, Noto_Serif_Devanagari } from "next/font/google";
 import "./globals.css";
 
 export const viewport: Viewport = {
@@ -17,6 +17,13 @@ const serif = EB_Garamond({
   variable: "--font-serif-custom",
   subsets: ["latin"],
   style: ["normal", "italic"],
+  display: "swap",
+});
+
+// Devanagari glyphs for the "काशी लाभ" part of the brand name.
+const devanagari = Noto_Serif_Devanagari({
+  variable: "--font-devanagari",
+  subsets: ["devanagari"],
   display: "swap",
 });
 
@@ -79,7 +86,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${sans.variable} ${serif.variable} h-full antialiased`}
+      className={`${sans.variable} ${serif.variable} ${devanagari.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">{children}</body>
     </html>

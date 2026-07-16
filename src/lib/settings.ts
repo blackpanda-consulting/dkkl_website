@@ -2,8 +2,9 @@ import { unstable_cache } from "next/cache";
 import { prisma } from "./db";
 
 // Fallback pricing if the singleton row doesn't exist yet.
-const DEFAULT_MONTHLY_RATE_PAISE = 3000000; // ₹30,000
-const DEFAULT_DEPOSIT_PAISE = 500000; // ₹5,000
+const DEFAULT_SINGLE_RATE_PAISE = 2500000; // ₹25,000
+const DEFAULT_DOUBLE_RATE_PAISE = 3000000; // ₹30,000
+const DEFAULT_SHARED_RATE_PAISE = 1800000; // ₹18,000
 
 export const SETTINGS_TAG = "settings";
 
@@ -19,37 +20,36 @@ export async function getSettings() {
 }
 
 // Cached, read-only pricing for the public site. Tagged so it can be
-// invalidated on-demand when the admin changes the rate — this lets the home
-// page be statically cached (fast, CDN-served) yet always accurate.
+// invalidated on-demand when the admin changes rates — this lets the home page
+// be statically cached (fast, CDN-served) yet always accurate.
 export const getPublicSettings = unstable_cache(
   async () => {
     const s = await prisma.setting.findUnique({ where: { id: 1 } });
     return {
-      monthlyRatePaise: s?.monthlyRatePaise ?? DEFAULT_MONTHLY_RATE_PAISE,
-      depositPaise: s?.depositPaise ?? DEFAULT_DEPOSIT_PAISE,
+      singleRatePaise: s?.singleRatePaise ?? DEFAULT_SINGLE_RATE_PAISE,
+      doubleRatePaise: s?.doubleRatePaise ?? DEFAULT_DOUBLE_RATE_PAISE,
+      sharedRatePaise: s?.sharedRatePaise ?? DEFAULT_SHARED_RATE_PAISE,
     };
   },
   ["public-settings"],
   { tags: [SETTINGS_TAG], revalidate: 3600 },
 );
 
-export async function updateRate(params: {
-  monthlyRatePaise: number;
-  depositPaise: number;
+export async function updateRates(params: {
+  singleRatePaise: number;
+  doubleRatePaise: number;
+  sharedRatePaise: number;
   updatedBy?: string;
 }) {
+  const data = {
+    singleRatePaise: params.singleRatePaise,
+    doubleRatePaise: params.doubleRatePaise,
+    sharedRatePaise: params.sharedRatePaise,
+    updatedBy: params.updatedBy ?? null,
+  };
   return prisma.setting.upsert({
     where: { id: 1 },
-    update: {
-      monthlyRatePaise: params.monthlyRatePaise,
-      depositPaise: params.depositPaise,
-      updatedBy: params.updatedBy ?? null,
-    },
-    create: {
-      id: 1,
-      monthlyRatePaise: params.monthlyRatePaise,
-      depositPaise: params.depositPaise,
-      updatedBy: params.updatedBy ?? null,
-    },
+    update: data,
+    create: { id: 1, ...data },
   });
 }

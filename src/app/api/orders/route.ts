@@ -3,7 +3,7 @@ import { prisma } from "@/lib/db";
 import { getSettings } from "@/lib/settings";
 import { razorpay } from "@/lib/razorpay";
 import { bookingSchema } from "@/lib/booking-schema";
-import { computePrice } from "@/lib/pricing";
+import { computePrice, rateForRoom } from "@/lib/pricing";
 
 export const runtime = "nodejs";
 
@@ -26,9 +26,14 @@ export async function POST(request: Request) {
   }
   const data = parsed.data;
 
-  // Authoritative pricing from the DB.
+  // Authoritative pricing from the DB — pick the selected room's rate.
   const settings = await getSettings();
-  const price = computePrice(data.months, settings.monthlyRatePaise, settings.depositPaise);
+  const ratePaise = rateForRoom(data.roomType, {
+    singleRatePaise: settings.singleRatePaise,
+    doubleRatePaise: settings.doubleRatePaise,
+    sharedRatePaise: settings.sharedRatePaise,
+  });
+  const price = computePrice(data.months, ratePaise);
 
   // Generate a human booking ref + provisional record in one transaction.
   const year = new Date().getFullYear();
@@ -54,9 +59,9 @@ export async function POST(request: Request) {
         attendantRelation: data.attendantRelation,
         longTermConfirmed: data.longTermConfirmed,
         consentAccepted: data.consentAccepted,
+        roomType: data.roomType,
         months: price.months,
         monthlyRatePaise: price.monthlyRatePaise,
-        depositPaise: price.depositPaise,
         amountPaise: price.totalPaise,
         status: "PROVISIONAL",
       },

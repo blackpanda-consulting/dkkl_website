@@ -2,10 +2,10 @@
 // content can be edited without touching layout. Verbatim from the source doc.
 
 export const site = {
-  // Full official name (Dinesh Kiran Kashi Laabh = Dinesh Kiran Kashi Laabh). Used for the site
-  // title, legal lines and structured data.
-  fullName: "Dinesh Kiran Kashi Laabh",
-  // Short brand shown in compact UI (nav wordmark, buttons).
+  // Stylised brand name shown in the wordmark/headings (Latin + Devanagari).
+  fullName: "Dinesh Kiran काशी लाभ",
+  // Romanised name for the SEO title, structured data and prose references.
+  romanName: "Dinesh Kiran Kashi Laabh",
   name: "Dinesh Kiran Kashi Laabh",
   legalName: "Dinesh Kiran Kashi Laabh",
   tagline: "Long-term residential stay in Kashi",
@@ -16,7 +16,7 @@ export const site = {
 export const nav = [
   { label: "Home", href: "#home" },
   { label: "Who It Is For", href: "#who" },
-  { label: "How We Help", href: "#help" },
+  { label: "Accommodation", href: "#help" },
   { label: "Stay & Pricing", href: "#pricing" },
   { label: "How It Works", href: "#how" },
   { label: "FAQs", href: "#faqs" },
@@ -51,26 +51,60 @@ export const who = {
 };
 
 export const includes = {
-  heading: "Stay Together. Pay for One Twin-Sharing Room.",
-  body: "The resident and one accompanying family member or personal attendant can stay together in a twin-sharing room for the cost of one room.",
-  roomFeatures: [
-    "One room for two — resident + attendant",
-    "A calm, home-like space, not a hospital",
-    "Set in the holy city of Kashi",
+  heading: "Accommodation & Pricing",
+  intro:
+    "Choose the stay option that best suits your needs. Our rooms are designed to provide comfort, privacy and a peaceful living environment during your time in Varanasi.",
+
+  // Room offerings (charges exclude GST).
+  rooms: [
+    {
+      name: "Single Occupancy",
+      price: "₹25,000",
+      gst: "+ GST",
+      per: "per month",
+      desc: "A private single room for one resident seeking comfort, quiet and personal space.",
+      featured: false,
+    },
+    {
+      name: "Double Occupancy",
+      price: "₹30,000",
+      gst: "+ GST",
+      per: "per month",
+      desc: "A comfortable twin-sharing room ideal for a resident with a companion or attendant — spacious and well-maintained.",
+      featured: true,
+    },
+    {
+      name: "Shared Occupancy",
+      price: "₹18,000",
+      gst: "+ GST",
+      per: "per month",
+      desc: "A single bed within a shared room — a comfortable and affordable long-term stay with a sense of community.",
+      featured: false,
+    },
   ],
-  supportTitle: "Support we can coordinate",
+
+  includedTitle: "What's included",
+  included: [
+    "Fully furnished accommodation",
+    "Housekeeping and maintenance",
+    "Electricity and Wi-Fi",
+    "Safe, clean and peaceful environment",
+  ],
+
+  supportTitle: "Additional services (charged separately)",
   supportLead:
-    "Our local team is with your family for the everyday things that matter most.",
+    "The following services are available based on your individual requirements and are billed separately.",
   // Scannable services (icon keys map to icons in the UI).
   services: [
-    { icon: "food", label: "Vegetarian food" },
-    { icon: "hospital", label: "Hospital visits" },
-    { icon: "temple", label: "Temple visits" },
-    { icon: "transport", label: "Local transport" },
-    { icon: "lotus", label: "End-of-life arrangements" },
+    { icon: "food", label: "Nutritious meals — ₹5,000 / person / month" },
+    { icon: "nursing", label: "Nursing and caregiving support" },
+    { icon: "transport", label: "Hospital and medical transportation" },
+    { icon: "temple", label: "Temple visits and local travel assistance" },
+    { icon: "medical", label: "Medical coordination" },
+    { icon: "other", label: "Other personalised support services" },
   ],
   servicesNote:
-    "Nursing, medical consultations, additional attendants, transport and other services may be arranged separately and charged according to actual requirements.",
+    "Medical, temple and ritual assistance is coordinated based on the resident's health condition, local availability, applicable rules and third-party service availability. Dinesh Kiran Kashi Laabh does not provide hospital care or guarantee medical or spiritual outcomes.",
 };
 
 export const responsibility = {

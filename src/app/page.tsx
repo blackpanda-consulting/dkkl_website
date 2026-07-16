@@ -7,6 +7,7 @@ import StayCalculator from "@/components/StayCalculator";
 import EnquiryForm from "@/components/EnquiryForm";
 import Reveal from "@/components/Reveal";
 import { getPublicSettings } from "@/lib/settings";
+import { formatPhone } from "@/lib/format-phone";
 import {
   hero,
   who,
@@ -33,8 +34,8 @@ export default async function Home() {
     "@graph": [
       {
         "@type": "Organization",
-        name: site.fullName,
-        legalName: site.fullName,
+        name: site.romanName,
+        legalName: site.romanName,
         alternateName: "Kashi Laabh",
         url: siteUrl,
         description:
@@ -126,24 +127,34 @@ export default async function Home() {
           </div>
         </Section>
 
-        {/* WHAT THE STAY INCLUDES */}
-        <Section id="help" eyebrow="How we help" title={includes.heading}>
-          {/* Row 1 — the room */}
-          <div className="grid items-center gap-8 lg:gap-14 md:grid-cols-2">
+        {/* ACCOMMODATION & PRICING */}
+        <Section id="help" eyebrow="Accommodation" title={includes.heading}>
+          <Reveal className="mx-auto mb-10 max-w-2xl text-center">
+            <p className="text-lg leading-relaxed text-muted">{includes.intro}</p>
+          </Reveal>
+
+          {/* Room offerings */}
+          <div className="grid gap-6 md:grid-cols-3">
+            {includes.rooms.map((room, i) => (
+              <Reveal key={room.name} dir="up" delayMs={i * 90} className="h-full">
+                <RoomCard room={room} />
+              </Reveal>
+            ))}
+          </div>
+
+          {/* What's included + Additional services */}
+          <div className="mt-14 grid items-start gap-8 lg:gap-12 md:grid-cols-2">
             <Reveal dir="left">
               <Photo
                 src="/images/room.jpg"
-                alt="A calm twin-sharing room at Dinesh Kiran Kashi Laabh"
-                caption="Twin-sharing room"
-                ratio="aspect-4/3"
+                alt="A calm, fully furnished room at Dinesh Kiran Kashi Laabh"
+                ratio="aspect-video"
               />
-            </Reveal>
-            <Reveal dir="right" delayMs={100}>
-              <p className="text-xl leading-relaxed text-foreground/90">{includes.body}</p>
-              <ul className="mt-7 space-y-3.5">
-                {includes.roomFeatures.map((f) => (
+              <h3 className="mt-6 text-xl font-semibold text-foreground">{includes.includedTitle}</h3>
+              <ul className="mt-4 grid gap-3 sm:grid-cols-2">
+                {includes.included.map((f) => (
                   <li key={f} className="flex items-center gap-3 text-foreground/90">
-                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-accent-soft text-accent">
+                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-teal-soft text-teal">
                       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                         <path d="M20 6L9 17l-5-5" />
                       </svg>
@@ -153,41 +164,24 @@ export default async function Home() {
                 ))}
               </ul>
             </Reveal>
-          </div>
 
-          {/* Row 2 — support we coordinate (services grid + photo) */}
-          <div className="mt-14 grid items-center gap-8 lg:mt-20 lg:gap-14 md:grid-cols-[1.15fr_0.85fr]">
-            <div className="order-2 md:order-1">
-              <Reveal dir="left">
-                <h3 className="text-2xl font-semibold text-foreground">{includes.supportTitle}</h3>
-                <p className="mt-2 text-muted">{includes.supportLead}</p>
-              </Reveal>
-              <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3">
-                {includes.services.map((s, i) => (
-                  <Reveal key={s.label} dir="zoom" delayMs={i * 70} className="h-full">
-                    <div className="service-tile flex h-full flex-col items-start gap-3 rounded-2xl border border-border bg-surface p-4">
-                      <span className="tile-icon flex h-11 w-11 items-center justify-center rounded-xl bg-accent-soft text-accent">
-                        <ServiceIcon name={s.icon} />
-                      </span>
-                      <span className="text-sm font-medium leading-snug text-foreground">{s.label}</span>
-                    </div>
-                  </Reveal>
+            <Reveal dir="right" delayMs={100}>
+              <h3 className="text-xl font-semibold text-foreground">{includes.supportTitle}</h3>
+              <p className="mt-2 text-muted">{includes.supportLead}</p>
+              <div className="mt-6 grid grid-cols-2 gap-3">
+                {includes.services.map((s) => (
+                  <div key={s.label} className="service-tile flex h-full flex-col items-start gap-3 rounded-2xl border border-border bg-surface p-4">
+                    <span className="tile-icon flex h-10 w-10 items-center justify-center rounded-xl bg-accent-soft text-accent">
+                      <ServiceIcon name={s.icon} />
+                    </span>
+                    <span className="text-sm font-medium leading-snug text-foreground">{s.label}</span>
+                  </div>
                 ))}
               </div>
-              <p className="mt-5 rounded-xl border border-border bg-surface-muted/60 p-4 text-sm leading-relaxed text-muted">
+              <p className="mt-5 rounded-xl border border-border bg-surface-muted/60 p-4 text-xs leading-relaxed text-muted">
                 {includes.servicesNote}
               </p>
-            </div>
-            <div className="order-1 md:order-2">
-              <Reveal dir="right" delayMs={100}>
-                <Photo
-                  src="/images/food.jpg"
-                  alt="A caregiver helping an elderly resident with a warm vegetarian meal"
-                  caption="Everyday care, coordinated locally"
-                  ratio="aspect-4/3"
-                />
-              </Reveal>
-            </div>
+            </Reveal>
           </div>
         </Section>
 
@@ -233,8 +227,9 @@ export default async function Home() {
         <Section id="pricing" eyebrow="Stay & pricing" title="Calculate Your Stay Cost" tone="muted">
           <Reveal dir="zoom">
             <StayCalculator
-              monthlyRatePaise={settings.monthlyRatePaise}
-              depositPaise={settings.depositPaise}
+              singleRatePaise={settings.singleRatePaise}
+              doubleRatePaise={settings.doubleRatePaise}
+              sharedRatePaise={settings.sharedRatePaise}
             />
           </Reveal>
         </Section>
@@ -255,7 +250,7 @@ export default async function Home() {
                 <ContactCard
                   href={tel}
                   title="Call us"
-                  value={site.phone || "Add a number"}
+                  value={site.phone ? formatPhone(site.phone) : "Add a number"}
                   icon={<PhoneIcon />}
                 />
                 <ContactCard
@@ -292,7 +287,7 @@ export default async function Home() {
               height={40}
               className="h-10 w-10 object-contain"
             />
-            <span className="font-serif text-lg font-semibold text-teal">{site.fullName}</span>
+            <span className="brand-name text-lg font-semibold text-teal">{site.fullName}</span>
           </div>
           <p className="text-sm leading-relaxed text-muted">{footerDisclaimer}</p>
           <p className="mt-6 text-xs text-muted">© {site.fullName}</p>
@@ -413,6 +408,35 @@ function Photo({
   );
 }
 
+function RoomCard({ room }: { room: (typeof includes.rooms)[number] }) {
+  return (
+    <div
+      className={`lift relative flex h-full flex-col overflow-hidden rounded-2xl bg-surface p-7 shadow-sm ${
+        room.featured ? "border-2 border-accent/40" : "border border-border"
+      }`}
+    >
+      {room.featured && (
+        <span className="absolute right-5 top-5 rounded-full bg-accent-soft px-3 py-1 text-xs font-semibold text-accent">
+          Most spacious
+        </span>
+      )}
+      <h3 className="pr-24 text-lg font-semibold text-foreground">{room.name}</h3>
+      <div className="mt-4 flex items-baseline gap-2">
+        <span className="font-display text-3xl font-semibold text-accent md:text-4xl">{room.price}</span>
+        <span className="text-sm font-medium text-muted">{room.gst}</span>
+      </div>
+      <p className="text-xs uppercase tracking-wide text-muted">{room.per}</p>
+      <p className="mt-4 flex-1 leading-relaxed text-muted">{room.desc}</p>
+      <a
+        href="#pricing"
+        className="btn-primary mt-6 inline-block self-start rounded-full px-5 py-2.5 text-sm font-semibold"
+      >
+        Calculate stay cost →
+      </a>
+    </div>
+  );
+}
+
 function ServiceIcon({ name }: { name: string }) {
   const common = {
     width: 22,
@@ -456,6 +480,27 @@ function ServiceIcon({ name }: { name: string }) {
       return (
         <svg {...common}>
           <path d="M12 4c1.6 1.7 2.4 3.6 2.4 5.6M12 4c-1.6 1.7-2.4 3.6-2.4 5.6M4 11c2 0 3.7.8 5 2.2M20 11c-2 0-3.7.8-5 2.2M12 20c-3.5 0-7-2.4-8-6 2.4-.4 4.2.2 5.6 1.4M12 20c3.5 0 7-2.4 8-6-2.4-.4-4.2.2-5.6 1.4" />
+        </svg>
+      );
+    case "nursing":
+      return (
+        <svg {...common}>
+          <path d="M20.8 5.6a5 5 0 0 0-7-.4l-1.8 1.6-1.8-1.6a5 5 0 0 0-7 7l8.8 8.4 8.8-8.4a5 5 0 0 0 0-6.6z" />
+          <path d="M12 8v4M10 10h4" />
+        </svg>
+      );
+    case "medical":
+      return (
+        <svg {...common}>
+          <path d="M6 3v6a4 4 0 0 0 8 0V3" />
+          <path d="M6 3H4M14 3h2M10 13v3a4 4 0 0 0 8 0v-1" />
+          <circle cx="18" cy="12" r="2" />
+        </svg>
+      );
+    case "other":
+      return (
+        <svg {...common}>
+          <path d="M12 3l1.8 4.6L18 9l-4.2 1.4L12 15l-1.8-4.6L6 9l4.2-1.4L12 3zM18 15l.9 2.3L21 18l-2.1.7L18 21l-.9-2.3L15 18l2.1-.7L18 15z" />
         </svg>
       );
     default:

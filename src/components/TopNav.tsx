@@ -21,7 +21,7 @@ export default function TopNav() {
             className="h-10 w-10 shrink-0 object-contain sm:h-11 sm:w-11"
           />
           <span className="flex flex-col leading-tight">
-            <span className="font-serif text-base font-semibold text-teal sm:text-lg">
+            <span className="brand-name text-base font-semibold text-teal sm:text-lg">
               {site.fullName}
             </span>
             <span className="text-[11px] uppercase tracking-wide text-muted">
