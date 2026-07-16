@@ -265,7 +265,7 @@ export default async function Home() {
                   value="Chat with our Kashi team"
                   icon={<ChatIcon />}
                 />
-                <div className="relative overflow-hidden rounded-2xl bg-linear-to-br from-accent to-accent-hover p-6 text-white shadow-(--shadow-md)">
+                <div className="relative overflow-hidden rounded-2xl bg-linear-to-br from-teal to-teal-hover p-6 text-white shadow-(--shadow-md)">
                   <span className="pointer-events-none absolute -right-6 -top-6 h-24 w-24 rounded-full bg-white/10" aria-hidden />
                   <p className="text-xs font-semibold uppercase tracking-[0.14em] text-white/70">
                     We&apos;re here for your family
@@ -284,10 +284,18 @@ export default async function Home() {
       {/* FOOTER DISCLAIMER */}
       <footer className="border-t border-border bg-surface-muted">
         <div className="mx-auto max-w-4xl px-4 py-10">
+          <div className="mb-6 flex items-center gap-3">
+            <Image
+              src="/logos/web-app-manifest-192x192.png"
+              alt="Dinesh Kiran Kashi Laabh logo"
+              width={40}
+              height={40}
+              className="h-10 w-10 object-contain"
+            />
+            <span className="font-serif text-lg font-semibold text-teal">{site.fullName}</span>
+          </div>
           <p className="text-sm leading-relaxed text-muted">{footerDisclaimer}</p>
-          <p className="mt-6 text-xs text-muted">
-            © {site.fullName}
-          </p>
+          <p className="mt-6 text-xs text-muted">© {site.fullName}</p>
         </div>
       </footer>
 

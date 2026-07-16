@@ -96,7 +96,7 @@ export default function StayCalculator({ monthlyRatePaise, depositPaise }: Props
         description: `Long-term stay — ${months} month(s)`,
         prefill: { name: data.familyName, contact: data.familyMobile },
         notes: { bookingRef: payload.bookingRef },
-        theme: { color: "#b8501f" },
+        theme: { color: "#b84427" },
         handler: async (r: {
           razorpay_order_id: string;
           razorpay_payment_id: string;

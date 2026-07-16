@@ -1,16 +1,22 @@
-import type { Metadata } from "next";
-import { Lora, Source_Sans_3 } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import { EB_Garamond, Inter } from "next/font/google";
 import "./globals.css";
 
-const sans = Source_Sans_3({
+export const viewport: Viewport = {
+  themeColor: "#296569",
+};
+
+// Brand fonts: Inter (body) + EB Garamond (headings/display).
+const sans = Inter({
   variable: "--font-sans-custom",
   subsets: ["latin"],
   display: "swap",
 });
 
-const serif = Lora({
+const serif = EB_Garamond({
   variable: "--font-serif-custom",
   subsets: ["latin"],
+  style: ["normal", "italic"],
   display: "swap",
 });
 
