@@ -6,30 +6,38 @@ import { MAX_MONTHS, MIN_MONTHS } from "./pricing";
 
 export const bookingSchema = z.object({
   months: z.coerce
-    .number()
-    .int()
-    .min(MIN_MONTHS)
-    .max(MAX_MONTHS),
+    .number({ error: "Please select the number of months" })
+    .int({ error: "Please select the number of months" })
+    .min(MIN_MONTHS, { error: "Please select the number of months" })
+    .max(MAX_MONTHS, { error: "Please select the number of months" }),
 
-  familyName: z.string().trim().min(2, "Enter the family contact name"),
+  familyName: z.string().trim().min(2, { error: "Please enter the family contact name" }),
   familyMobile: z
     .string()
     .trim()
-    .regex(/^(\+?\d[\d\s-]{7,14})$/, "Enter a valid mobile number"),
+    .regex(/^(\+?\d[\d\s-]{7,14})$/, { error: "Please enter a valid mobile number" }),
 
-  residentName: z.string().trim().min(2, "Enter the resident's name"),
-  residentAge: z.coerce.number().int().min(0).max(120),
+  residentName: z.string().trim().min(2, { error: "Please enter the resident's name" }),
+  residentAge: z.coerce
+    .number({ error: "Please enter the resident's age" })
+    .int({ error: "Please enter a valid age" })
+    .min(1, { error: "Please enter a valid age" })
+    .max(120, { error: "Please enter a valid age (up to 120)" }),
 
-  condition: z.enum(["TERMINALLY_ILL", "ELDERLY_FRAIL", "OTHER"]),
-  mobility: z.enum(["INDEPENDENT", "ASSISTED", "BEDRIDDEN"]),
+  condition: z.enum(["TERMINALLY_ILL", "ELDERLY_FRAIL", "OTHER"], {
+    error: "Please select the current condition",
+  }),
+  mobility: z.enum(["INDEPENDENT", "ASSISTED", "BEDRIDDEN"], {
+    error: "Please select the mobility level",
+  }),
 
-  arrivalDate: z.coerce.date(),
+  arrivalDate: z.coerce.date({ error: "Please choose the expected arrival date" }),
 
-  attendantName: z.string().trim().min(2, "Enter the attendant's name"),
+  attendantName: z.string().trim().min(2, { error: "Please enter the attendant's name" }),
   attendantRelation: z
     .string()
     .trim()
-    .min(2, "Enter the relationship to the resident"),
+    .min(2, { error: "Please enter the relationship to the resident" }),
 
   // Required confirmations (spec §8). Must be true.
   longTermConfirmed: z.literal(true, {

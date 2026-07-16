@@ -7,6 +7,7 @@ import StayCalculator from "@/components/StayCalculator";
 import EnquiryForm from "@/components/EnquiryForm";
 import Reveal from "@/components/Reveal";
 import { getPublicSettings } from "@/lib/settings";
+import { formatPhone } from "@/lib/format-phone";
 import {
   hero,
   who,
@@ -255,7 +256,7 @@ export default async function Home() {
                 <ContactCard
                   href={tel}
                   title="Call us"
-                  value={site.phone || "Add a number"}
+                  value={site.phone ? formatPhone(site.phone) : "Add a number"}
                   icon={<PhoneIcon />}
                 />
                 <ContactCard
