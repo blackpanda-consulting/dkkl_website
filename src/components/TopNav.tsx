@@ -1,15 +1,33 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { AnimatePresence, motion } from "framer-motion";
 import { nav, site } from "@/lib/content";
+import BrandName from "@/components/BrandName";
+import { EASE } from "@/lib/motion";
 
 export default function TopNav() {
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  // Transparent over the hero, solid once scrolled past it.
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll(); // account for a restored scroll position on load
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-border bg-background/90 backdrop-blur">
+    <header
+      className={`sticky top-0 z-40 border-b transition-all duration-500 ${
+        scrolled
+          ? "border-border bg-background/90 backdrop-blur-md"
+          : "border-transparent bg-transparent"
+      }`}
+    >
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
         <Link href="#home" className="flex items-center gap-2.5">
           <Image
@@ -21,9 +39,7 @@ export default function TopNav() {
             className="h-10 w-10 shrink-0 object-contain sm:h-11 sm:w-11"
           />
           <span className="flex flex-col leading-tight">
-            <span className="brand-name text-base font-semibold text-teal sm:text-lg">
-              {site.fullName}
-            </span>
+            <BrandName className="text-base font-semibold sm:text-lg" />
             <span className="text-[11px] uppercase tracking-wide text-muted">
               {site.tagline}
             </span>
@@ -44,7 +60,7 @@ export default function TopNav() {
             href="#pricing"
             className="rounded-full bg-accent px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-accent-hover"
           >
-            Calculate Stay Cost
+            Book a Room
           </Link>
         </nav>
 
@@ -65,23 +81,32 @@ export default function TopNav() {
         </button>
       </div>
 
-      {open && (
-        <nav className="border-t border-border bg-surface px-4 py-3 md:hidden">
-          <ul className="flex flex-col gap-1">
-            {nav.map((item) => (
-              <li key={item.href}>
-                <Link
-                  href={item.href}
-                  onClick={() => setOpen(false)}
-                  className="block rounded-md px-2 py-2 text-sm text-foreground/90 hover:bg-surface-muted"
-                >
-                  {item.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
-      )}
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.nav
+            key="mobile-menu"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.32, ease: EASE }}
+            className="overflow-hidden border-t border-border bg-surface md:hidden"
+          >
+            <ul className="flex flex-col gap-1 px-4 py-3">
+              {nav.map((item) => (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    onClick={() => setOpen(false)}
+                    className="block rounded-md px-2 py-2 text-sm text-foreground/90 hover:bg-surface-muted"
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </motion.nav>
+        )}
+      </AnimatePresence>
     </header>
   );
 }

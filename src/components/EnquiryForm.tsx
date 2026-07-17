@@ -56,7 +56,7 @@ export default function EnquiryForm() {
         Book a Free Consultation
       </h3>
       <p className="mt-1 text-sm text-muted">
-        Share a few details and our team will call you back — no obligation.
+        Share a few details and our team will call you back. There is no obligation.
       </p>
 
       <div className="mt-5 space-y-4">

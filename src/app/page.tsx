@@ -3,15 +3,24 @@ import Image from "next/image";
 import TopNav from "@/components/TopNav";
 import MobileActions from "@/components/MobileActions";
 import Faq from "@/components/Faq";
-import StayCalculator from "@/components/StayCalculator";
+import StayEstimator from "@/components/StayEstimator";
 import EnquiryForm from "@/components/EnquiryForm";
 import Reveal from "@/components/Reveal";
+import WordReveal from "@/components/WordReveal";
+import TitleAccent from "@/components/TitleAccent";
+import HeroMotion from "@/components/HeroMotion";
+import ParallaxMedia from "@/components/ParallaxMedia";
+import { StaggerList, StaggerItem } from "@/components/StaggerList";
+import { REVEAL_STAGGER } from "@/lib/motion";
 import { getPublicSettings } from "@/lib/settings";
 import { formatPhone } from "@/lib/format-phone";
 import {
   hero,
   who,
+  booking,
   includes,
+  talkToUs,
+  twinSharingNote,
   howItWorks,
   faqs,
   footerDisclaimer,
@@ -39,7 +48,7 @@ export default async function Home() {
         alternateName: "Kashi Laabh",
         url: siteUrl,
         description:
-          "Long-term twin-sharing residential accommodation in Kashi (Varanasi) for terminally ill, elderly and frail residents accompanied by a family member or attendant.",
+          "Long-term twin-sharing residential accommodation in Kashi (Varanasi) for terminally ill and elderly residents accompanied by a family member or attendant.",
         areaServed: { "@type": "City", name: "Varanasi" },
       },
       {
@@ -63,8 +72,8 @@ export default async function Home() {
 
       <main className="flex-1 pb-20 md:pb-0">
         {/* HERO */}
-        <section id="home" className="hero-sky relative overflow-hidden">
-          <div className="absolute inset-0">
+        <HeroMotion
+          media={
             <Image
               src="/images/hero.jpg"
               alt="An elderly resident and her daughter sitting together at Dinesh Kiran Kashi Laabh in Kashi"
@@ -73,87 +82,103 @@ export default async function Home() {
               sizes="100vw"
               className="object-cover object-right"
             />
-            {/* Keep the left-side copy readable over the photo. */}
-            <div className="absolute inset-0 bg-linear-to-r from-background via-background/88 to-background/25 md:via-background/70 md:to-transparent" />
-            <div className="absolute inset-0 bg-linear-to-t from-background/85 via-transparent to-transparent md:from-background/45" />
-          </div>
-          <div className="relative mx-auto flex min-h-130 max-w-6xl items-center px-4 pt-16 pb-16 md:min-h-150 md:pt-24 md:pb-24">
-            <div className="max-w-2xl">
-              <p className="enter mb-5 inline-flex items-center gap-2 rounded-full border border-accent/20 bg-surface/70 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-accent backdrop-blur">
-                <span className="h-1.5 w-1.5 rounded-full bg-accent" />
-                {hero.eyebrow}
-              </p>
-              <h1 className="enter enter-1 text-4xl font-semibold leading-[1.1] text-foreground md:text-6xl">
-                A Dignified Place for the{" "}
-                <span className="text-gradient">Final Years, Months or Days</span> in
-                Kashi
-              </h1>
-              <p className="enter enter-2 mt-6 max-w-xl text-lg leading-relaxed text-muted">
-                {hero.body}
-              </p>
-              <div className="enter enter-3 mt-8 flex flex-wrap gap-3">
-                <Link
-                  href="#pricing"
-                  className="btn-primary rounded-full px-7 py-3.5 text-sm font-semibold"
-                >
-                  {hero.primaryCta} →
-                </Link>
-                <a
-                  href={tel}
-                  className="rounded-full border border-border bg-surface px-7 py-3.5 text-sm font-semibold text-foreground transition-all hover:-translate-y-0.5 hover:border-accent hover:text-accent"
-                >
-                  {hero.secondaryCta}
-                </a>
-              </div>
+          }
+        >
+          <Reveal>
+            <p className="mb-5 inline-flex items-center gap-2 rounded-full border border-accent/20 bg-surface/70 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-accent backdrop-blur">
+              <span className="h-1.5 w-1.5 rounded-full bg-accent" />
+              {hero.eyebrow}
+            </p>
+          </Reveal>
 
-              <dl className="enter enter-3 mt-12 grid max-w-lg grid-cols-3 gap-6">
-                <Stat value="Twin-share" label="Room for resident + attendant" />
-                <Stat value="1–24 mo" label="Flexible long-term stays" />
-                <Stat value="Local team" label="Food · hospital · temple help" />
-              </dl>
+          {/* The gradient span can't survive a per-word split, so the headline
+              reveals as two runs and the accent phrase keeps its treatment. */}
+          <h1 className="text-4xl font-semibold leading-[1.1] text-foreground md:text-6xl">
+            <WordReveal text="A Dignified Place for the" delay={0.1} />{" "}
+            <WordReveal className="text-gradient" text="Final Years, Months or Days" delay={0.28} />{" "}
+            <WordReveal text="in Kashi" delay={0.62} />
+          </h1>
+
+          <Reveal delay={0.3}>
+            <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted">{hero.body}</p>
+          </Reveal>
+
+          <Reveal delay={0.38}>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Link
+                href="#pricing"
+                className="btn-primary rounded-full px-7 py-3.5 text-sm font-semibold"
+              >
+                {hero.primaryCta} →
+              </Link>
+              <a
+                href={tel}
+                className="rounded-full border border-border bg-surface px-7 py-3.5 text-sm font-semibold text-foreground transition-all hover:-translate-y-0.5 hover:border-accent hover:text-accent"
+              >
+                {hero.secondaryCta}
+              </a>
             </div>
-          </div>
-        </section>
+          </Reveal>
+
+          <StaggerList as="dl" className="mt-12 grid max-w-lg grid-cols-3 gap-6">
+            <StaggerItem as="div">
+              <Stat value="Twin-share" label="Room for resident + attendant" />
+            </StaggerItem>
+            <StaggerItem as="div">
+              <Stat value="1-24 months" label="Flexible long-term stays" />
+            </StaggerItem>
+            <StaggerItem as="div">
+              <Stat value="Local team" label="Food · hospital · temple help" />
+            </StaggerItem>
+          </StaggerList>
+        </HeroMotion>
 
         {/* WHO IT IS FOR */}
         <Section id="who" eyebrow="Eligibility" title={who.heading} tone="muted">
-          <div className="grid gap-6 md:grid-cols-2">
-            <Reveal dir="left" className="h-full">
-              <EligibilityCard tone="success" title={who.forTitle} items={who.forItems} />
-            </Reveal>
-            <Reveal dir="right" delayMs={80} className="h-full">
-              <EligibilityCard tone="danger" title={who.notForTitle} items={who.notForItems} />
-            </Reveal>
-          </div>
+          <Reveal dir="up" className="mx-auto max-w-3xl">
+            <EligibilityCard
+              title={who.forTitle}
+              items={who.forItems}
+              close={who.forClose}
+              tel={tel}
+            />
+          </Reveal>
         </Section>
 
         {/* ACCOMMODATION & PRICING */}
         <Section id="help" eyebrow="Accommodation" title={includes.heading}>
-          <Reveal className="mx-auto mb-10 max-w-2xl text-center">
+          <Reveal className="mx-auto mb-12 max-w-2xl text-center">
             <p className="text-lg leading-relaxed text-muted">{includes.intro}</p>
           </Reveal>
 
           {/* Room offerings */}
-          <div className="grid gap-6 md:grid-cols-3">
+          <div className="grid gap-7 md:grid-cols-3 md:gap-8">
             {includes.rooms.map((room, i) => (
-              <Reveal key={room.name} dir="up" delayMs={i * 90} className="h-full">
+              <Reveal key={room.name} dir="up" delay={i * REVEAL_STAGGER} className="h-full">
                 <RoomCard room={room} />
               </Reveal>
             ))}
           </div>
 
-          {/* What's included + Additional services */}
-          <div className="mt-14 grid items-start gap-8 lg:gap-12 md:grid-cols-2">
+          {/* What's included — the photo pairs with a single roomy list, so the
+              copy no longer wraps against a cramped half-column. */}
+          <div className="mt-20 grid items-center gap-10 md:grid-cols-2 lg:gap-16">
             <Reveal dir="left">
               <Photo
                 src="/images/room.jpg"
                 alt="A calm, fully furnished room at Dinesh Kiran Kashi Laabh"
-                ratio="aspect-video"
+                ratio="aspect-4/3"
               />
-              <h3 className="mt-6 text-xl font-semibold text-foreground">{includes.includedTitle}</h3>
-              <ul className="mt-4 grid gap-3 sm:grid-cols-2">
+            </Reveal>
+
+            <Reveal dir="right" delay={REVEAL_STAGGER}>
+              <h3 className="text-2xl font-semibold text-foreground">{includes.includedTitle}</h3>
+              <ul className="mt-6">
                 {includes.included.map((f) => (
-                  <li key={f} className="flex items-center gap-3 text-foreground/90">
+                  <li
+                    key={f}
+                    className="flex items-center gap-3.5 border-t border-border/60 py-3.5 text-foreground/90 first:border-0 first:pt-0"
+                  >
                     <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-teal-soft text-teal">
                       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                         <path d="M20 6L9 17l-5-5" />
@@ -163,57 +188,79 @@ export default async function Home() {
                   </li>
                 ))}
               </ul>
+              <p className="mt-6 rounded-xl bg-teal-soft/45 p-5 text-sm leading-relaxed text-foreground/80">
+                {twinSharingNote}
+              </p>
             </Reveal>
+          </div>
 
-            <Reveal dir="right" delayMs={100}>
-              <h3 className="text-xl font-semibold text-foreground">{includes.supportTitle}</h3>
-              <p className="mt-2 text-muted">{includes.supportLead}</p>
-              <div className="mt-6 grid grid-cols-2 gap-3">
-                {includes.services.map((s) => (
-                  <div key={s.label} className="service-tile flex h-full flex-col items-start gap-3 rounded-2xl border border-border bg-surface p-4">
-                    <span className="tile-icon flex h-10 w-10 items-center justify-center rounded-xl bg-accent-soft text-accent">
+          {/* Additional services — full width, so six tiles fall into two even
+              rows of three instead of a lopsided two-column stack. */}
+          <div className="mt-20">
+            <Reveal className="mx-auto max-w-2xl text-center">
+              <h3 className="text-2xl font-semibold text-foreground">{includes.supportTitle}</h3>
+              <p className="mt-3 leading-relaxed text-muted">{includes.supportLead}</p>
+            </Reveal>
+            <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {includes.services.map((s, i) => (
+                <Reveal key={s.label} dir="up" delay={(i % 3) * REVEAL_STAGGER} className="h-full">
+                  <div className="service-tile flex h-full items-center gap-4 rounded-2xl border border-border bg-surface p-5">
+                    <span className="tile-icon flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-accent-soft text-accent">
                       <ServiceIcon name={s.icon} />
                     </span>
                     <span className="text-sm font-medium leading-snug text-foreground">{s.label}</span>
                   </div>
-                ))}
-              </div>
-              <p className="mt-5 rounded-xl border border-border bg-surface-muted/60 p-4 text-xs leading-relaxed text-muted">
+                </Reveal>
+              ))}
+            </div>
+            <Reveal>
+              <p className="mx-auto mt-8 max-w-3xl text-center text-xs leading-relaxed text-muted">
                 {includes.servicesNote}
               </p>
             </Reveal>
           </div>
+
+          {/* Talk to us — for families who would rather speak to someone than
+              pick a room on their own. */}
+          <Reveal dir="up" className="mt-20">
+            <TalkToUs tel={tel} wa={wa} />
+          </Reveal>
         </Section>
 
         {/* IMMERSIVE KASHI BAND */}
         <section className="relative overflow-hidden">
-          <div className="relative h-[380px] w-full md:h-[460px]">
+          <ParallaxMedia className="h-[380px] w-full md:h-[460px]">
             <Image
               src="/images/spiritual.jpg"
               alt="The eternal city of Kashi (Varanasi) at sunrise"
               fill
               sizes="100vw"
-              className="kenburns object-cover"
+              className="object-cover"
             />
-            <div className="absolute inset-0 bg-linear-to-t from-black/60 via-black/20 to-black/25" />
-            <div className="absolute inset-0 flex items-end">
-              <div className="mx-auto w-full max-w-6xl px-4 pb-10">
-                <Reveal>
-                  <p className="max-w-xl font-serif text-2xl leading-snug text-white md:text-3xl">
-                    In the eternal city of Kashi — a place to spend the final phase of
-                    life with care, peace and dignity.
-                  </p>
-                </Reveal>
-              </div>
+          </ParallaxMedia>
+          <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-black/60 via-black/20 to-black/25" />
+          <div className="absolute inset-0 flex items-end">
+            <div className="mx-auto w-full max-w-6xl px-4 pb-10">
+              <WordReveal
+                as="p"
+                text="In the eternal city of Kashi, a place to spend the final phase of life with care, peace and dignity."
+                className="max-w-xl font-serif text-2xl leading-snug text-white md:text-3xl"
+              />
             </div>
           </div>
         </section>
 
-        {/* HOW IT WORKS */}
+        {/* HOW IT WORKS — step grid */}
         <Section id="how" eyebrow="The journey" title={howItWorks.heading}>
-          <ol className="mx-auto grid max-w-4xl gap-4 sm:grid-cols-2">
+          <ol className="mx-auto grid max-w-4xl gap-5 sm:grid-cols-2">
             {howItWorks.steps.map((step, i) => (
-              <Reveal as="li" key={i} dir="up" delayMs={(i % 2) * 90} className="lift flex gap-4 rounded-xl border border-border bg-surface p-4">
+              <Reveal
+                as="li"
+                key={i}
+                dir="up"
+                delay={(i % 2) * REVEAL_STAGGER}
+                className="lift flex gap-4 rounded-2xl border border-border bg-surface p-6 shadow-sm"
+              >
                 <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-accent font-display text-sm font-semibold text-white shadow-(--shadow-glow)">
                   {i + 1}
                 </span>
@@ -224,9 +271,16 @@ export default async function Home() {
         </Section>
 
         {/* PRICING / CALCULATOR */}
-        <Section id="pricing" eyebrow="Stay & pricing" title="Calculate Your Stay Cost" tone="muted">
+        <Section id="pricing" eyebrow="Stay & pricing" title="Book a Room" tone="muted">
+          <Reveal className="mx-auto mb-12 max-w-2xl text-center">
+            <p className="text-lg leading-relaxed text-muted">
+              Estimate what a stay would cost, then pay the {booking.fee} booking fee to
+              hold a place. The balance is arranged with our Kashi team, never on this
+              page.
+            </p>
+          </Reveal>
           <Reveal dir="zoom">
-            <StayCalculator
+            <StayEstimator
               singleRatePaise={settings.singleRatePaise}
               doubleRatePaise={settings.doubleRatePaise}
               sharedRatePaise={settings.sharedRatePaise}
@@ -240,12 +294,12 @@ export default async function Home() {
         </Section>
 
         {/* CONTACT */}
-        <Section id="contact" eyebrow="Get in touch" title="Speak to Our Kashi Team">
-          <div className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
+        <Section id="contact" eyebrow="Get in touch" title="Talk to Us Now">
+          <div className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr]">
             <Reveal dir="left">
               <EnquiryForm />
             </Reveal>
-            <Reveal dir="right" delayMs={100}>
+            <Reveal dir="right" delay={REVEAL_STAGGER}>
               <div className="space-y-4">
                 <ContactCard
                   href={tel}
@@ -266,7 +320,7 @@ export default async function Home() {
                     We&apos;re here for your family
                   </p>
                   <p className="mt-2 font-display text-xl font-semibold leading-snug">
-                    Tell us about the resident and we&apos;ll help plan the stay — with
+                    Tell us about the resident and we&apos;ll help plan the stay, with
                     care and no pressure.
                   </p>
                 </div>
@@ -278,19 +332,20 @@ export default async function Home() {
 
       {/* FOOTER DISCLAIMER */}
       <footer className="border-t border-border bg-surface-muted">
-        <div className="mx-auto max-w-4xl px-4 py-10">
-          <div className="mb-6 flex items-center gap-3">
-            <Image
-              src="/logos/web-app-manifest-192x192.png"
-              alt="Dinesh Kiran Kashi Laabh logo"
-              width={40}
-              height={40}
-              className="h-10 w-10 object-contain"
-            />
-            <span className="brand-name text-lg font-semibold text-teal">{site.fullName}</span>
-          </div>
+        <div className="mx-auto max-w-4xl px-4 py-12">
+          {/* Full approved lockup: mark, name, tagline and the Aaroha OM credit. */}
+          <Image
+            src="/logos/final_logo.png"
+            alt={`${site.romanName} — Spiritual Hospice and Care Centre, powered by Aaroha Om`}
+            width={420}
+            height={420}
+            sizes="(max-width: 768px) 260px, 320px"
+            className="mb-8 h-auto w-65 md:w-80"
+          />
           <p className="text-sm leading-relaxed text-muted">{footerDisclaimer}</p>
-          <p className="mt-6 text-xs text-muted">© {site.fullName}</p>
+          <p className="mt-6 text-xs text-muted">
+            © {new Date().getFullYear()} {site.romanName}
+          </p>
         </div>
       </footer>
 
@@ -321,55 +376,83 @@ function Section({
         tone === "muted" ? "bg-surface-muted pattern-dots" : "bg-background"
       }`}
     >
-      <div className="mx-auto max-w-6xl px-4 py-16 md:py-24">
-        <Reveal className="mb-12 flex flex-col items-center text-center">
-          {eyebrow && <span className="eyebrow mb-4">{eyebrow}</span>}
-          <h2 className="text-2xl font-semibold text-foreground md:text-3xl">{title}</h2>
-          <span className="title-accent" aria-hidden />
-        </Reveal>
+      <div className="mx-auto max-w-6xl px-4 py-20 md:py-24">
+        {/* Eyebrow, then title — a short beat between them reads as an intro
+            rather than the whole header popping in at once. */}
+        <div className="mb-12 flex flex-col items-center text-center md:mb-14">
+          {eyebrow && (
+            <Reveal className="flex flex-col items-center">
+              <span className="eyebrow mb-4">{eyebrow}</span>
+            </Reveal>
+          )}
+          <WordReveal
+            as="h2"
+            text={title}
+            delay={0.16}
+            className="text-3xl font-semibold text-foreground md:text-4xl"
+          />
+          <TitleAccent />
+        </div>
         {children}
       </div>
     </section>
   );
 }
 
+// Affirmative only. There is no counterpart "not for" card by design: families
+// who are unsure are asked to call rather than rule themselves out.
 function EligibilityCard({
-  tone,
   title,
   items,
+  close,
+  tel,
 }: {
-  tone: "success" | "danger";
   title: string;
   items: string[];
+  close?: string;
+  tel: string;
 }) {
-  const isFor = tone === "success";
-  const accentText = isFor ? "text-success" : "text-danger";
-  const accentBg = isFor ? "bg-success/10" : "bg-danger/10";
-  const topBar = isFor ? "bg-success" : "bg-danger";
   return (
-    <div className="lift relative overflow-hidden rounded-2xl border border-border bg-surface shadow-sm">
-      <span className={`absolute inset-x-0 top-0 h-1 ${topBar}`} aria-hidden />
-      <div className="p-7">
-        <div className="mb-5 flex items-center gap-3">
-          <span className={`flex h-10 w-10 items-center justify-center rounded-xl ${accentBg} ${accentText}`}>
+    <div className="relative overflow-hidden rounded-2xl border border-border bg-surface shadow-sm">
+      <span className="absolute inset-x-0 top-0 h-1 bg-success" aria-hidden />
+      <div className="p-8 md:p-10">
+        <div className="mb-6 flex items-center gap-3">
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-success/10 text-success">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              {isFor ? <path d="M20 6L9 17l-5-5" /> : <path d="M18 6L6 18M6 6l12 12" />}
+              <path d="M20 6L9 17l-5-5" />
             </svg>
           </span>
-          <h3 className={`text-lg font-semibold ${accentText}`}>{title}</h3>
+          <h3 className="text-xl font-semibold text-foreground">{title}</h3>
         </div>
+
         <ul className="space-y-3">
           {items.map((item) => (
-            <li key={item} className="flex gap-3 border-t border-border/60 pt-3 text-foreground/90 first:border-0 first:pt-0">
-              <span className={`mt-0.5 shrink-0 ${accentText}`} aria-hidden>
+            <li
+              key={item}
+              className="flex gap-3 border-t border-border/60 pt-3 text-foreground/90 first:border-0 first:pt-0"
+            >
+              <span className="mt-0.5 shrink-0 text-success" aria-hidden>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  {isFor ? <path d="M20 6L9 17l-5-5" /> : <path d="M18 6L6 18M6 6l12 12" />}
+                  <path d="M20 6L9 17l-5-5" />
                 </svg>
               </span>
               <span>{item}</span>
             </li>
           ))}
         </ul>
+
+        {close && (
+          <p className="mt-7 rounded-xl bg-teal-soft/45 p-5 text-sm leading-relaxed text-foreground/85">
+            {close}{" "}
+            <a
+              href={tel}
+              className="font-semibold text-teal underline underline-offset-2 hover:text-teal-hover"
+            >
+              Talk to us now
+            </a>
+            .
+          </p>
+        )}
       </div>
     </div>
   );
@@ -408,10 +491,58 @@ function Photo({
   );
 }
 
+// A quiet pause at the end of the section. It sits on white so it lifts off the
+// cream background, and stays centred and narrow so it reads as an aside rather
+// than another card competing with the rooms.
+function TalkToUs({ tel, wa }: { tel: string; wa: string }) {
+  return (
+    <div className="mx-auto max-w-3xl rounded-3xl border border-border-strong bg-surface px-8 py-14 text-center shadow-(--shadow-md) md:px-14">
+      <div className="ornament mb-7" aria-hidden>
+        <ServiceIcon name="lotus" />
+      </div>
+
+      <h3 className="text-2xl font-semibold text-foreground md:text-3xl">{talkToUs.heading}</h3>
+      <p className="mx-auto mt-4 max-w-xl leading-relaxed text-muted">{talkToUs.body}</p>
+
+      <div className="mt-9 flex flex-col items-center justify-center gap-x-7 gap-y-5 sm:flex-row">
+        <a
+          href={tel}
+          className="lift inline-flex items-center gap-2.5 rounded-full bg-teal px-7 py-4 text-sm font-semibold text-white shadow-(--shadow-sm) hover:bg-teal-hover"
+        >
+          <PhoneIcon />
+          {site.phone ? formatPhone(site.phone) : talkToUs.callLabel}
+        </a>
+
+        <p className="text-sm text-muted">
+          <a
+            href={wa}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-medium text-teal underline underline-offset-4 transition-colors hover:text-teal-hover"
+          >
+            {talkToUs.waLabel}
+          </a>
+          <span className="px-2.5 text-border-strong" aria-hidden>·</span>
+          <a
+            href="#contact"
+            className="font-medium text-teal underline underline-offset-4 transition-colors hover:text-teal-hover"
+          >
+            {talkToUs.enquiryLabel}
+          </a>
+        </p>
+      </div>
+
+      <p className="mt-7 text-[11px] uppercase tracking-[0.14em] text-muted/70">
+        {talkToUs.eyebrow}
+      </p>
+    </div>
+  );
+}
+
 function RoomCard({ room }: { room: (typeof includes.rooms)[number] }) {
   return (
     <div
-      className={`lift relative flex h-full flex-col overflow-hidden rounded-2xl bg-surface p-7 shadow-sm ${
+      className={`lift relative flex h-full flex-col overflow-hidden rounded-2xl bg-surface p-8 shadow-sm ${
         room.featured ? "border-2 border-accent/40" : "border border-border"
       }`}
     >
@@ -420,18 +551,24 @@ function RoomCard({ room }: { room: (typeof includes.rooms)[number] }) {
           Most spacious
         </span>
       )}
-      <h3 className="pr-24 text-lg font-semibold text-foreground">{room.name}</h3>
+      <h3 className="pr-24 text-xl font-semibold text-foreground">{room.name}</h3>
       <div className="mt-4 flex items-baseline gap-2">
         <span className="font-display text-3xl font-semibold text-accent md:text-4xl">{room.price}</span>
         <span className="text-sm font-medium text-muted">{room.gst}</span>
       </div>
       <p className="text-xs uppercase tracking-wide text-muted">{room.per}</p>
       <p className="mt-4 flex-1 leading-relaxed text-muted">{room.desc}</p>
+      {/* Only the featured room carries the filled button — three glowing
+          terracotta pills side by side read as a wall of red. */}
       <a
         href="#pricing"
-        className="btn-primary mt-6 inline-block self-start rounded-full px-5 py-2.5 text-sm font-semibold"
+        className={`mt-6 inline-block self-start rounded-full px-5 py-2.5 text-sm font-semibold transition-all ${
+          room.featured
+            ? "btn-primary"
+            : "border border-border-strong text-accent hover:-translate-y-0.5 hover:border-accent hover:bg-accent-soft"
+        }`}
       >
-        Calculate stay cost →
+        Book this room →
       </a>
     </div>
   );

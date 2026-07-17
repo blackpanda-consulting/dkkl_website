@@ -43,7 +43,7 @@ export const bookingSchema = z.object({
 
   // Required confirmations (spec §8). Must be true.
   longTermConfirmed: z.literal(true, {
-    error: "Please confirm this is a long-term stay, not tourist accommodation",
+    error: "Please confirm this is a long-term stay of a month or more",
   }),
   consentAccepted: z.literal(true, {
     error: "Please accept the responsibility, cancellation, refund and privacy terms",
@@ -54,7 +54,9 @@ export type BookingInput = z.infer<typeof bookingSchema>;
 
 export const CONDITION_OPTIONS = [
   { value: "TERMINALLY_ILL", label: "Terminally ill" },
-  { value: "ELDERLY_FRAIL", label: "Elderly and frail" },
+  // Enum value stays ELDERLY_FRAIL (persisted in the database); only the label
+  // families see is softened.
+  { value: "ELDERLY_FRAIL", label: "Elderly" },
   { value: "OTHER", label: "Other" },
 ] as const;
 

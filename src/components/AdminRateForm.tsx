@@ -48,7 +48,7 @@ export default function AdminRateForm({
     <form onSubmit={save} className="rounded-2xl border border-border bg-surface p-6 shadow-sm">
       <h2 className="text-lg font-semibold text-foreground">Monthly rates (₹, excl. GST)</h2>
       <p className="mt-1 text-sm text-muted">
-        Changes take effect immediately on the public calculator — no deploy needed.
+        Changes take effect immediately on the public estimator. No deploy needed.
       </p>
       <div className="mt-5 grid gap-4 sm:grid-cols-3">
         {field("Single occupancy (₹ / month)", single, setSingle)}

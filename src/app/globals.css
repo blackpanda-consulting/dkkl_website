@@ -25,8 +25,10 @@
   --success: #2f7a4d;
   --danger: #b3261e;
 
-  --shadow-sm: 0 1px 2px rgba(63, 52, 43, 0.06), 0 1px 3px rgba(63, 52, 43, 0.05);
-  --shadow-md: 0 6px 20px -6px rgba(63, 52, 43, 0.16);
+  /* Cards sit on a cream background very close to white, so shadows carry the
+     separation — keep them soft but clearly visible. */
+  --shadow-sm: 0 1px 2px rgba(63, 52, 43, 0.08), 0 8px 18px -8px rgba(63, 52, 43, 0.16);
+  --shadow-md: 0 10px 28px -10px rgba(63, 52, 43, 0.22);
   --shadow-glow: 0 10px 40px -8px rgba(184, 68, 39, 0.35);
 }
 
@@ -75,33 +77,9 @@ html {
 /* ---------------------------------------------------------------------------
    Motion — subtle and tasteful only.
    --------------------------------------------------------------------------- */
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(18px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* Load-in entrance (hero) */
-.enter { animation: fadeUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) both; }
-.enter-1 { animation-delay: 0.08s; }
-.enter-2 { animation-delay: 0.16s; }
-.enter-3 { animation-delay: 0.24s; }
-
-/* Scroll reveal (toggled by IntersectionObserver via .is-visible) */
-.reveal {
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-  will-change: opacity, transform;
-}
-.reveal.is-visible { opacity: 1; transform: none; }
-.reveal[data-delay="1"] { transition-delay: 0.08s; }
-.reveal[data-delay="2"] { transition-delay: 0.16s; }
-.reveal[data-delay="3"] { transition-delay: 0.24s; }
-/* Directional reveals */
-.reveal-left { transform: translateX(-32px); }
-.reveal-right { transform: translateX(32px); }
-.reveal-zoom { transform: scale(0.94); }
+/* Reveal/entrance motion lives in framer-motion now — see src/lib/motion.ts for
+   the spec and MotionProvider for reduced-motion handling. Only motion with no
+   JS counterpart remains below. */
 
 /* Gentle hover lift for cards */
 .lift { transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s ease, border-color 0.35s ease; }
@@ -113,13 +91,6 @@ html {
 /* Image zoom on hover (wrap with a .group parent) */
 .zoom-img { transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1); will-change: transform; }
 .group:hover .zoom-img { transform: scale(1.06); }
-
-/* Slow Ken Burns drift for full-bleed bands */
-@keyframes kenburns {
-  from { transform: scale(1) translate3d(0, 0, 0); }
-  to { transform: scale(1.12) translate3d(-1.5%, -1%, 0); }
-}
-.kenburns { animation: kenburns 24s ease-in-out infinite alternate; }
 
 /* Interactive service tile */
 .service-tile {
@@ -141,17 +112,14 @@ html {
   color: #fff;
 }
 
-/* Animated accent under section titles */
+/* Accent under section titles. The width is animated by TitleAccent. */
 .title-accent {
   display: block;
   height: 3px;
-  width: 0;
-  margin: 0.9rem auto 0;
+  margin: 1.1rem auto 0;
   border-radius: 999px;
   background: linear-gradient(90deg, var(--accent), var(--teal));
-  transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.15s;
 }
-.reveal.is-visible .title-accent { width: 3.5rem; }
 
 /* Faint dotted texture so flat sections aren't so bare */
 .pattern-dots {
@@ -168,8 +136,8 @@ html {
   background: var(--surface);
   color: var(--accent);
   border-radius: 999px;
-  padding: 0.35rem 0.9rem;
-  font-size: 0.7rem;
+  padding: 0.4rem 1rem;
+  font-size: 0.75rem;
   font-weight: 600;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -214,9 +182,9 @@ html {
    --------------------------------------------------------------------------- */
 .card {
   background: var(--surface);
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-strong);
   border-radius: 1.25rem;
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-md);
 }
 .card-hover {
   transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
@@ -294,11 +262,12 @@ html {
   box-shadow: var(--shadow-glow);
 }
 
+/* Reveals, word reveals and parallax opt out in JS (MotionProvider's
+   reducedMotion="user", plus useReducedMotion in the parallax components) — CSS
+   can't reach framer-motion's inline transforms. What's left here is the motion
+   that is still pure CSS. */
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  .enter, .reveal { animation: none; opacity: 1; transform: none; transition: none; }
-  .kenburns { animation: none; }
   .zoom-img, .group:hover .zoom-img { transform: none; }
   .lift:hover, .card-hover:hover, .btn-primary:hover, .service-tile:hover { transform: none; }
-  .title-accent { width: 3.5rem; transition: none; }
 }

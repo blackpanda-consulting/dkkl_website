@@ -2,7 +2,7 @@ import Link from "next/link";
 import { footerDisclaimer, includes, site } from "@/lib/content";
 
 export const metadata = {
-  title: `Terms, Cancellation & Refund Policy — ${site.romanName}`,
+  title: `Terms, Cancellation & Refund Policy · ${site.romanName}`,
 };
 
 // PLACEHOLDER for the legal clauses (§12) — final wording to be approved by
