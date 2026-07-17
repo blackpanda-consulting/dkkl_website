@@ -1,60 +1,43 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { motion } from "framer-motion";
+import {
+  EASE,
+  REVEAL_DURATION,
+  REVEAL_VIEWPORT,
+  revealVariants,
+  type RevealDir,
+} from "@/lib/motion";
 
-// Reveals children on scroll into view. Supports a direction and an explicit
-// stagger delay. Respects prefers-reduced-motion via the CSS in globals.css.
+// General-purpose scroll reveal. Reduced motion is handled globally by
+// MotionProvider's <MotionConfig reducedMotion="user">, which strips the
+// transform and leaves the opacity fade.
+//
+// Stagger convention across grids: delay={i * REVEAL_STAGGER}.
 export default function Reveal({
   children,
   delay = 0,
-  delayMs,
   dir = "up",
-  as: Tag = "div",
+  as = "div",
   className = "",
 }: {
   children: React.ReactNode;
-  delay?: 0 | 1 | 2 | 3;
-  delayMs?: number;
-  dir?: "up" | "left" | "right" | "zoom";
-  as?: React.ElementType;
+  /** Seconds. Use delay={i * REVEAL_STAGGER} to stagger a grid. */
+  delay?: number;
+  dir?: RevealDir;
+  as?: keyof typeof motion;
   className?: string;
 }) {
-  const ref = useRef<HTMLElement | null>(null);
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setVisible(true);
-          io.disconnect();
-        }
-      },
-      // Wait until the element is meaningfully in view before starting, so the
-      // long settle plays where it can be seen rather than off the bottom edge.
-      { threshold: 0.15, rootMargin: "0px 0px -90px 0px" },
-    );
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
-
-  const dirClass =
-    dir === "left"
-      ? "reveal-left"
-      : dir === "right"
-        ? "reveal-right"
-        : dir === "zoom"
-          ? "reveal-zoom"
-          : "";
+  const Tag = motion[as] as typeof motion.div;
 
   return (
     <Tag
-      ref={ref}
-      data-delay={delayMs === undefined && delay ? delay : undefined}
-      style={delayMs !== undefined ? { transitionDelay: `${delayMs}ms` } : undefined}
-      className={`reveal ${dirClass} ${visible ? "is-visible" : ""} ${className}`}
+      className={className}
+      variants={revealVariants(dir)}
+      initial="hidden"
+      whileInView="visible"
+      viewport={REVEAL_VIEWPORT}
+      transition={{ duration: REVEAL_DURATION, ease: EASE, delay }}
     >
       {children}
     </Tag>

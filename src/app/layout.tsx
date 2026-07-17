@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { EB_Garamond, Inter, Noto_Serif_Devanagari } from "next/font/google";
+import MotionProvider from "@/components/MotionProvider";
 import "./globals.css";
 
 export const viewport: Viewport = {
@@ -29,12 +30,12 @@ const devanagari = Noto_Serif_Devanagari({
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 const description =
-  "Long-term twin-sharing accommodation in Kashi (Varanasi) for terminally ill, elderly and frail residents, with a responsible family member or attendant. Book a room securely, or talk to our Kashi team.";
+  "Long-term twin-sharing accommodation in Kashi (Varanasi) for terminally ill and elderly residents, with a responsible family member or attendant. Book a room securely, or talk to our Kashi team.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Dinesh Kiran Kashi Laabh — Dignified Long-Term Stay in Kashi",
+    default: "Dinesh Kiran Kashi Laabh: Dignified Long-Term Stay in Kashi",
     template: "%s · Dinesh Kiran Kashi Laabh",
   },
   description,
@@ -52,7 +53,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     siteName: "Dinesh Kiran Kashi Laabh",
-    title: "Dinesh Kiran Kashi Laabh — Dignified Long-Term Stay in Kashi",
+    title: "Dinesh Kiran Kashi Laabh: Dignified Long-Term Stay in Kashi",
     description,
     url: siteUrl,
     locale: "en_IN",
@@ -67,7 +68,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Dinesh Kiran Kashi Laabh — Dignified Long-Term Stay in Kashi",
+    title: "Dinesh Kiran Kashi Laabh: Dignified Long-Term Stay in Kashi",
     description,
     images: ["/images/hero.jpg"],
   },
@@ -88,7 +89,10 @@ export default function RootLayout({
       lang="en"
       className={`${sans.variable} ${serif.variable} ${devanagari.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        {/* children stay server-rendered — MotionProvider only supplies context. */}
+        <MotionProvider>{children}</MotionProvider>
+      </body>
     </html>
   );
 }

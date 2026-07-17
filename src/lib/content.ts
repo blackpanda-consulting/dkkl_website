@@ -3,6 +3,10 @@
 
 export const site = {
   // Stylised brand name shown in the wordmark/headings (Latin + Devanagari).
+  // Split so each script can carry its logo colour: the approved logo sets
+  // "DINESH KIRAN" in teal and "काशी लाभ" in orange. Render via <BrandName>.
+  nameLatin: "Dinesh Kiran",
+  nameDevanagari: "काशी लाभ",
   fullName: "Dinesh Kiran काशी लाभ",
   // Romanised name for the SEO title, structured data and prose references.
   romanName: "Dinesh Kiran Kashi Laabh",
@@ -11,6 +15,33 @@ export const site = {
   tagline: "Long-term residential stay in Kashi",
   phone: process.env.NEXT_PUBLIC_PHONE ?? "",
   whatsapp: process.env.NEXT_PUBLIC_WHATSAPP ?? "",
+};
+
+// Booking is a flat fee paid on Razorpay's own hosted page. The monthly rates
+// shown on the site are informational only — nothing is charged here, and the
+// stay total is settled with the team afterwards.
+export const booking = {
+  // Razorpay hosted payment link. Set NEXT_PUBLIC_BOOKING_LINK to switch it on;
+  // while it's empty the UI falls back to asking the family to call.
+  link: process.env.NEXT_PUBLIC_BOOKING_LINK ?? "",
+  fee: "₹1,000",
+  cta: "Book a slot",
+  heading: "Ready to hold a place?",
+  // The Razorpay page does NOT fix the amount — its own text reads "Kindly enter
+  // the amount communicated by our team". So the amount has to be stated here,
+  // plainly, or families arrive at an empty amount box with nothing to go on.
+  // If the payment page is ever set to a fixed ₹1,000, drop the "enter ₹1,000"
+  // sentence and the enterAmountHint below.
+  //
+  // Deliberately makes no claim about refundability or adjustment against the
+  // first month — confirm the commercial terms before adding any.
+  note: "Nothing is charged on this page. To hold a place, pay the ₹1,000 booking fee on our secure Razorpay page. Our Kashi team will then contact you to confirm the room, the stay and the balance.",
+  enterAmountHint: "On the payment page, enter ₹1,000 as the amount.",
+  // Razorpay settles to the parent company, so the checkout is branded Aarohaom
+  // rather than Kashi Laabh. Say so before the family clicks, not after.
+  processorNote: "Payments are processed securely by Razorpay for Aarohaom Private Limited, the parent company of Dinesh Kiran Kashi Laabh.",
+  estimateNote:
+    "This is an estimate to help you plan. It is not a bill, and the amount is not collected here.",
 };
 
 export const nav = [
@@ -27,31 +58,26 @@ export const hero = {
   eyebrow: "Long-term residential stay in Kashi",
   headline:
     "A Dignified Place to Spend the Final Years, Months or Days in Kashi",
-  body: "Dinesh Kiran Kashi Laabh offers long-term twin-sharing accommodation for terminally ill, elderly and frail people who wish to live in Kashi during the final phase of life. A family member or personal attendant stays with the resident and remains primarily responsible for their care. Our local team helps with food, hospital visits, temple visits and end-of-life arrangements when required.",
+  body: "Dinesh Kiran Kashi Laabh offers long-term twin-sharing accommodation for terminally ill and elderly individuals who wish to live in Kashi during the final phase of life. A family member or personal attendant stays with the resident and remains primarily responsible for their care. Our local team helps with food, hospital visits, temple visits and end-of-life arrangements when required.",
   primaryCta: "Book a Room",
-  secondaryCta: "Speak to Our Kashi Team",
+  // tel: link, so name it for what tapping it does.
+  secondaryCta: "Call Us Now",
 };
 
+// Only "who it is for". The "who it is not for" list was dropped deliberately:
+// it discouraged families from calling to ask whether they'd be accommodated.
+// The closing line invites the unsure to call instead of ruling themselves out.
 export const who = {
   heading: "Is Dinesh Kiran Kashi Laabh Right for Your Family?",
-  forTitle: "Who it is for",
+  forTitle: "Dinesh Kiran Kashi Laabh is a perfect fit if you are:",
   forItems: [
-    "Terminally ill patients who wish to spend their final days in Kashi",
-    "Elderly and frail people planning to live in Kashi for their final years, months or days",
-    "Families seeking a long-term residential arrangement",
-    "Residents accompanied by a responsible family member or personal attendant",
+    "Terminally ill and wish to spend your final days in Kashi",
+    "Elderly and planning to live in Kashi for your final years, months or days",
+    "A family seeking a long-term residential arrangement",
+    "A resident accompanied by a responsible family member or personal attendant",
   ],
-  notForTitle: "A gentle note on fit",
-  notForLead:
-    "So you know what to expect before you plan anything:",
-  notForItems: [
-    "Our home is made for long-term stays of a month or more, rather than short visits or pilgrimage trips.",
-    "This is a residential home rather than a hotel — stays are planned in months, not nights.",
-    "Our support is shaped around terminally ill, elderly and frail residents who need advanced or end-of-life care.",
-    "Every resident is accompanied by a family member or personal attendant, who stays with them throughout.",
-  ],
-  notForClose:
-    "Not sure whether this is the right fit for your family? We're glad to help you think it through.",
+  forClose:
+    "Not sure whether Dinesh Kiran Kashi Laabh is the perfect fit for you and your family? We're glad to help you think it through.",
 };
 
 export const includes = {
@@ -74,7 +100,7 @@ export const includes = {
       price: "₹30,000",
       gst: "+ GST",
       per: "per month",
-      desc: "A comfortable twin-sharing room ideal for a resident with a companion or attendant — spacious and well-maintained.",
+      desc: "A comfortable twin-sharing room, spacious and well-maintained, ideal for a resident with a companion or attendant.",
       featured: true,
     },
     {
@@ -82,7 +108,7 @@ export const includes = {
       price: "₹18,000",
       gst: "+ GST",
       per: "per month",
-      desc: "A single bed within a shared room — a comfortable and affordable long-term stay with a sense of community.",
+      desc: "A single bed within a shared room. A comfortable and affordable long-term stay with a sense of community.",
       featured: false,
     },
   ],
@@ -100,7 +126,7 @@ export const includes = {
     "The following services are available based on your individual requirements and are billed separately.",
   // Scannable services (icon keys map to icons in the UI).
   services: [
-    { icon: "food", label: "Nutritious meals — ₹5,000 / person / month" },
+    { icon: "food", label: "Nutritious meals at ₹5,000 per person, per month" },
     { icon: "nursing", label: "Nursing and caregiving support" },
     { icon: "transport", label: "Hospital and medical transportation" },
     { icon: "temple", label: "Temple visits and local travel assistance" },
@@ -116,7 +142,7 @@ export const includes = {
 export const talkToUs = {
   eyebrow: "No pressure, no obligation",
   heading: "Talk to Us",
-  body: "Choosing a room from a page is hard when someone you love is unwell. Tell us about the resident and our Kashi team will help you find the right room — and if we're not the right place for your family, we'll say so honestly.",
+  body: "Choosing a room from a page is hard when someone you love is unwell. Tell us about the resident and our Kashi team will help you find the right room. If we're not the right place for your family, we'll say so honestly.",
   callLabel: "Call our Kashi team",
   waLabel: "WhatsApp",
   enquiryLabel: "Send an enquiry",
@@ -132,12 +158,10 @@ export const howItWorks = {
   steps: [
     "Confirm that the resident fits the eligibility criteria.",
     "Choose an occupancy type and the expected number of months of stay.",
-    "View the total accommodation amount for your chosen room.",
-    "Enter resident and family details.",
-    "Accept the responsibility, cancellation and refund terms.",
-    "Continue to Razorpay and complete payment.",
-    "Receive payment and booking confirmation.",
-    "Dinesh Kiran Kashi Laabh calls the family to complete arrival planning and support assessment.",
+    "See an estimate of the accommodation cost for your chosen room.",
+    "Pay the ₹1,000 booking fee on our secure Razorpay page to hold a place.",
+    "Dinesh Kiran Kashi Laabh calls the family to confirm the room, the stay and the balance.",
+    "Together we complete arrival planning and the support assessment.",
   ],
 };
 
@@ -177,8 +201,5 @@ export const twinSharingNote =
 export const optionalServicesNote =
   "Food, nursing, hospital transport, temple visits and other support are not included unless specifically selected or quoted.";
 
-export const paymentNote =
-  "Food, nursing, medical consultations, local transport, temple visits and other additional support are arranged separately according to need and are not included in this payment unless expressly shown.";
-
 export const footerDisclaimer =
-  "Dinesh Kiran Kashi Laabh provides long-term residential accommodation and local coordination support for eligible terminally ill, elderly and frail residents. A responsible family member or personal attendant must remain with the resident and is primarily responsible for daily care, medical decisions, medicines, consent and legal matters. Dinesh Kiran Kashi Laabh may help coordinate food, hospital visits, temple visits and end-of-life arrangements but does not assume responsibility for medical outcomes, death or cremation.";
+  "Dinesh Kiran Kashi Laabh provides long-term residential accommodation and local coordination support for eligible terminally ill and elderly residents. A responsible family member or personal attendant must remain with the resident and is primarily responsible for daily care, medical decisions, medicines, consent and legal matters. Dinesh Kiran Kashi Laabh may help coordinate food, hospital visits, temple visits and end-of-life arrangements but does not assume responsibility for medical outcomes, death or cremation.";

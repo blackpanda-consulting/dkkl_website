@@ -5,7 +5,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: "Dinesh Kiran Kashi Laabh",
     short_name: "Kashi Laabh",
     description:
-      "Long-term twin-sharing accommodation in Kashi for terminally ill, elderly and frail residents.",
+      "Long-term twin-sharing accommodation in Kashi for terminally ill and elderly residents.",
     start_url: "/",
     display: "standalone",
     background_color: "#fcf9f2",

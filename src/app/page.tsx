@@ -3,14 +3,21 @@ import Image from "next/image";
 import TopNav from "@/components/TopNav";
 import MobileActions from "@/components/MobileActions";
 import Faq from "@/components/Faq";
-import StayCalculator from "@/components/StayCalculator";
+import StayEstimator from "@/components/StayEstimator";
 import EnquiryForm from "@/components/EnquiryForm";
 import Reveal from "@/components/Reveal";
+import WordReveal from "@/components/WordReveal";
+import TitleAccent from "@/components/TitleAccent";
+import HeroMotion from "@/components/HeroMotion";
+import ParallaxMedia from "@/components/ParallaxMedia";
+import { StaggerList, StaggerItem } from "@/components/StaggerList";
+import { REVEAL_STAGGER } from "@/lib/motion";
 import { getPublicSettings } from "@/lib/settings";
 import { formatPhone } from "@/lib/format-phone";
 import {
   hero,
   who,
+  booking,
   includes,
   talkToUs,
   twinSharingNote,
@@ -41,7 +48,7 @@ export default async function Home() {
         alternateName: "Kashi Laabh",
         url: siteUrl,
         description:
-          "Long-term twin-sharing residential accommodation in Kashi (Varanasi) for terminally ill, elderly and frail residents accompanied by a family member or attendant.",
+          "Long-term twin-sharing residential accommodation in Kashi (Varanasi) for terminally ill and elderly residents accompanied by a family member or attendant.",
         areaServed: { "@type": "City", name: "Varanasi" },
       },
       {
@@ -65,8 +72,8 @@ export default async function Home() {
 
       <main className="flex-1 pb-20 md:pb-0">
         {/* HERO */}
-        <section id="home" className="hero-sky relative overflow-hidden">
-          <div className="absolute inset-0">
+        <HeroMotion
+          media={
             <Image
               src="/images/hero.jpg"
               alt="An elderly resident and her daughter sitting together at Dinesh Kiran Kashi Laabh in Kashi"
@@ -75,64 +82,67 @@ export default async function Home() {
               sizes="100vw"
               className="object-cover object-right"
             />
-            {/* Keep the left-side copy readable over the photo. */}
-            <div className="absolute inset-0 bg-linear-to-r from-background via-background/88 to-background/25 md:via-background/70 md:to-transparent" />
-            <div className="absolute inset-0 bg-linear-to-t from-background/85 via-transparent to-transparent md:from-background/45" />
-          </div>
-          <div className="relative mx-auto flex min-h-130 max-w-6xl items-center px-4 pt-16 pb-16 md:min-h-150 md:pt-24 md:pb-24">
-            <div className="max-w-2xl">
-              <p className="enter mb-5 inline-flex items-center gap-2 rounded-full border border-accent/20 bg-surface/70 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-accent backdrop-blur">
-                <span className="h-1.5 w-1.5 rounded-full bg-accent" />
-                {hero.eyebrow}
-              </p>
-              <h1 className="enter enter-1 text-4xl font-semibold leading-[1.1] text-foreground md:text-6xl">
-                A Dignified Place for the{" "}
-                <span className="text-gradient">Final Years, Months or Days</span> in
-                Kashi
-              </h1>
-              <p className="enter enter-2 mt-6 max-w-xl text-lg leading-relaxed text-muted">
-                {hero.body}
-              </p>
-              <div className="enter enter-3 mt-8 flex flex-wrap gap-3">
-                <Link
-                  href="#pricing"
-                  className="btn-primary rounded-full px-7 py-3.5 text-sm font-semibold"
-                >
-                  {hero.primaryCta} →
-                </Link>
-                <a
-                  href={tel}
-                  className="rounded-full border border-border bg-surface px-7 py-3.5 text-sm font-semibold text-foreground transition-all hover:-translate-y-0.5 hover:border-accent hover:text-accent"
-                >
-                  {hero.secondaryCta}
-                </a>
-              </div>
+          }
+        >
+          <Reveal>
+            <p className="mb-5 inline-flex items-center gap-2 rounded-full border border-accent/20 bg-surface/70 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-accent backdrop-blur">
+              <span className="h-1.5 w-1.5 rounded-full bg-accent" />
+              {hero.eyebrow}
+            </p>
+          </Reveal>
 
-              <dl className="enter enter-3 mt-12 grid max-w-lg grid-cols-3 gap-6">
-                <Stat value="Twin-share" label="Room for resident + attendant" />
-                <Stat value="1–24 mo" label="Flexible long-term stays" />
-                <Stat value="Local team" label="Food · hospital · temple help" />
-              </dl>
+          {/* The gradient span can't survive a per-word split, so the headline
+              reveals as two runs and the accent phrase keeps its treatment. */}
+          <h1 className="text-4xl font-semibold leading-[1.1] text-foreground md:text-6xl">
+            <WordReveal text="A Dignified Place for the" delay={0.1} />{" "}
+            <WordReveal className="text-gradient" text="Final Years, Months or Days" delay={0.28} />{" "}
+            <WordReveal text="in Kashi" delay={0.62} />
+          </h1>
+
+          <Reveal delay={0.3}>
+            <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted">{hero.body}</p>
+          </Reveal>
+
+          <Reveal delay={0.38}>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Link
+                href="#pricing"
+                className="btn-primary rounded-full px-7 py-3.5 text-sm font-semibold"
+              >
+                {hero.primaryCta} →
+              </Link>
+              <a
+                href={tel}
+                className="rounded-full border border-border bg-surface px-7 py-3.5 text-sm font-semibold text-foreground transition-all hover:-translate-y-0.5 hover:border-accent hover:text-accent"
+              >
+                {hero.secondaryCta}
+              </a>
             </div>
-          </div>
-        </section>
+          </Reveal>
+
+          <StaggerList as="dl" className="mt-12 grid max-w-lg grid-cols-3 gap-6">
+            <StaggerItem as="div">
+              <Stat value="Twin-share" label="Room for resident + attendant" />
+            </StaggerItem>
+            <StaggerItem as="div">
+              <Stat value="1-24 months" label="Flexible long-term stays" />
+            </StaggerItem>
+            <StaggerItem as="div">
+              <Stat value="Local team" label="Food · hospital · temple help" />
+            </StaggerItem>
+          </StaggerList>
+        </HeroMotion>
 
         {/* WHO IT IS FOR */}
         <Section id="who" eyebrow="Eligibility" title={who.heading} tone="muted">
-          <div className="grid gap-8 md:grid-cols-2">
-            <Reveal dir="left" className="h-full">
-              <EligibilityCard tone="success" title={who.forTitle} items={who.forItems} />
-            </Reveal>
-            <Reveal dir="right" delayMs={160} className="h-full">
-              <EligibilityCard
-                tone="note"
-                title={who.notForTitle}
-                lead={who.notForLead}
-                items={who.notForItems}
-                close={who.notForClose}
-              />
-            </Reveal>
-          </div>
+          <Reveal dir="up" className="mx-auto max-w-3xl">
+            <EligibilityCard
+              title={who.forTitle}
+              items={who.forItems}
+              close={who.forClose}
+              tel={tel}
+            />
+          </Reveal>
         </Section>
 
         {/* ACCOMMODATION & PRICING */}
@@ -144,7 +154,7 @@ export default async function Home() {
           {/* Room offerings */}
           <div className="grid gap-7 md:grid-cols-3 md:gap-8">
             {includes.rooms.map((room, i) => (
-              <Reveal key={room.name} dir="up" delayMs={i * 140} className="h-full">
+              <Reveal key={room.name} dir="up" delay={i * REVEAL_STAGGER} className="h-full">
                 <RoomCard room={room} />
               </Reveal>
             ))}
@@ -161,7 +171,7 @@ export default async function Home() {
               />
             </Reveal>
 
-            <Reveal dir="right" delayMs={180}>
+            <Reveal dir="right" delay={REVEAL_STAGGER}>
               <h3 className="text-2xl font-semibold text-foreground">{includes.includedTitle}</h3>
               <ul className="mt-6">
                 {includes.included.map((f) => (
@@ -193,7 +203,7 @@ export default async function Home() {
             </Reveal>
             <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {includes.services.map((s, i) => (
-                <Reveal key={s.label} dir="up" delayMs={(i % 3) * 120} className="h-full">
+                <Reveal key={s.label} dir="up" delay={(i % 3) * REVEAL_STAGGER} className="h-full">
                   <div className="service-tile flex h-full items-center gap-4 rounded-2xl border border-border bg-surface p-5">
                     <span className="tile-icon flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-accent-soft text-accent">
                       <ServiceIcon name={s.icon} />
@@ -219,24 +229,23 @@ export default async function Home() {
 
         {/* IMMERSIVE KASHI BAND */}
         <section className="relative overflow-hidden">
-          <div className="relative h-[380px] w-full md:h-[460px]">
+          <ParallaxMedia className="h-[380px] w-full md:h-[460px]">
             <Image
               src="/images/spiritual.jpg"
               alt="The eternal city of Kashi (Varanasi) at sunrise"
               fill
               sizes="100vw"
-              className="kenburns object-cover"
+              className="object-cover"
             />
-            <div className="absolute inset-0 bg-linear-to-t from-black/60 via-black/20 to-black/25" />
-            <div className="absolute inset-0 flex items-end">
-              <div className="mx-auto w-full max-w-6xl px-4 pb-10">
-                <Reveal>
-                  <p className="max-w-xl font-serif text-2xl leading-snug text-white md:text-3xl">
-                    In the eternal city of Kashi — a place to spend the final phase of
-                    life with care, peace and dignity.
-                  </p>
-                </Reveal>
-              </div>
+          </ParallaxMedia>
+          <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-black/60 via-black/20 to-black/25" />
+          <div className="absolute inset-0 flex items-end">
+            <div className="mx-auto w-full max-w-6xl px-4 pb-10">
+              <WordReveal
+                as="p"
+                text="In the eternal city of Kashi, a place to spend the final phase of life with care, peace and dignity."
+                className="max-w-xl font-serif text-2xl leading-snug text-white md:text-3xl"
+              />
             </div>
           </div>
         </section>
@@ -249,7 +258,7 @@ export default async function Home() {
                 as="li"
                 key={i}
                 dir="up"
-                delayMs={(i % 2) * 130}
+                delay={(i % 2) * REVEAL_STAGGER}
                 className="lift flex gap-4 rounded-2xl border border-border bg-surface p-6 shadow-sm"
               >
                 <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-accent font-display text-sm font-semibold text-white shadow-(--shadow-glow)">
@@ -263,8 +272,15 @@ export default async function Home() {
 
         {/* PRICING / CALCULATOR */}
         <Section id="pricing" eyebrow="Stay & pricing" title="Book a Room" tone="muted">
+          <Reveal className="mx-auto mb-12 max-w-2xl text-center">
+            <p className="text-lg leading-relaxed text-muted">
+              Estimate what a stay would cost, then pay the {booking.fee} booking fee to
+              hold a place. The balance is arranged with our Kashi team, never on this
+              page.
+            </p>
+          </Reveal>
           <Reveal dir="zoom">
-            <StayCalculator
+            <StayEstimator
               singleRatePaise={settings.singleRatePaise}
               doubleRatePaise={settings.doubleRatePaise}
               sharedRatePaise={settings.sharedRatePaise}
@@ -278,12 +294,12 @@ export default async function Home() {
         </Section>
 
         {/* CONTACT */}
-        <Section id="contact" eyebrow="Get in touch" title="Speak to Our Kashi Team">
+        <Section id="contact" eyebrow="Get in touch" title="Talk to Us Now">
           <div className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr]">
             <Reveal dir="left">
               <EnquiryForm />
             </Reveal>
-            <Reveal dir="right" delayMs={180}>
+            <Reveal dir="right" delay={REVEAL_STAGGER}>
               <div className="space-y-4">
                 <ContactCard
                   href={tel}
@@ -304,7 +320,7 @@ export default async function Home() {
                     We&apos;re here for your family
                   </p>
                   <p className="mt-2 font-display text-xl font-semibold leading-snug">
-                    Tell us about the resident and we&apos;ll help plan the stay — with
+                    Tell us about the resident and we&apos;ll help plan the stay, with
                     care and no pressure.
                   </p>
                 </div>
@@ -316,19 +332,20 @@ export default async function Home() {
 
       {/* FOOTER DISCLAIMER */}
       <footer className="border-t border-border bg-surface-muted">
-        <div className="mx-auto max-w-4xl px-4 py-10">
-          <div className="mb-6 flex items-center gap-3">
-            <Image
-              src="/logos/web-app-manifest-192x192.png"
-              alt="Dinesh Kiran Kashi Laabh logo"
-              width={40}
-              height={40}
-              className="h-10 w-10 object-contain"
-            />
-            <span className="brand-name text-lg font-semibold text-teal">{site.fullName}</span>
-          </div>
+        <div className="mx-auto max-w-4xl px-4 py-12">
+          {/* Full approved lockup: mark, name, tagline and the Aaroha OM credit. */}
+          <Image
+            src="/logos/final_logo.png"
+            alt={`${site.romanName} — Spiritual Hospice and Care Centre, powered by Aaroha Om`}
+            width={420}
+            height={420}
+            sizes="(max-width: 768px) 260px, 320px"
+            className="mb-8 h-auto w-65 md:w-80"
+          />
           <p className="text-sm leading-relaxed text-muted">{footerDisclaimer}</p>
-          <p className="mt-6 text-xs text-muted">© {site.fullName}</p>
+          <p className="mt-6 text-xs text-muted">
+            © {new Date().getFullYear()} {site.romanName}
+          </p>
         </div>
       </footer>
 
@@ -368,10 +385,13 @@ function Section({
               <span className="eyebrow mb-4">{eyebrow}</span>
             </Reveal>
           )}
-          <Reveal delayMs={160} className="flex flex-col items-center">
-            <h2 className="text-3xl font-semibold text-foreground md:text-4xl">{title}</h2>
-            <span className="title-accent" aria-hidden />
-          </Reveal>
+          <WordReveal
+            as="h2"
+            text={title}
+            delay={0.16}
+            className="text-3xl font-semibold text-foreground md:text-4xl"
+          />
+          <TitleAccent />
         </div>
         {children}
       </div>
@@ -379,72 +399,56 @@ function Section({
   );
 }
 
-// Two tones: "success" affirms who the home is for; "note" sets expectations in a
-// warm, neutral voice. Saying the stay is long-term is enough — the second card
-// deliberately avoids rejection styling (no red, no crosses).
+// Affirmative only. There is no counterpart "not for" card by design: families
+// who are unsure are asked to call rather than rule themselves out.
 function EligibilityCard({
-  tone,
   title,
-  lead,
   items,
   close,
+  tel,
 }: {
-  tone: "success" | "note";
   title: string;
-  lead?: string;
   items: string[];
   close?: string;
+  tel: string;
 }) {
-  const isFor = tone === "success";
-  const accentText = isFor ? "text-success" : "text-teal";
-  const accentBg = isFor ? "bg-success/10" : "bg-teal-soft";
-  const topBar = isFor ? "bg-success" : "bg-teal";
   return (
-    <div className="lift relative flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-surface shadow-sm">
-      <span className={`absolute inset-x-0 top-0 h-1 ${topBar}`} aria-hidden />
-      <div className="flex flex-1 flex-col p-8">
-        <div className="mb-5 flex items-center gap-3">
-          <span className={`flex h-10 w-10 items-center justify-center rounded-xl ${accentBg} ${accentText}`}>
-            {isFor ? (
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M20 6L9 17l-5-5" />
-              </svg>
-            ) : (
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="12" cy="12" r="9" />
-                <path d="M12 11v5M12 8h.01" />
-              </svg>
-            )}
+    <div className="relative overflow-hidden rounded-2xl border border-border bg-surface shadow-sm">
+      <span className="absolute inset-x-0 top-0 h-1 bg-success" aria-hidden />
+      <div className="p-8 md:p-10">
+        <div className="mb-6 flex items-center gap-3">
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-success/10 text-success">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M20 6L9 17l-5-5" />
+            </svg>
           </span>
-          <h3 className={`text-xl font-semibold ${accentText}`}>{title}</h3>
+          <h3 className="text-xl font-semibold text-foreground">{title}</h3>
         </div>
-
-        {lead && <p className="mb-4 text-sm leading-relaxed text-muted">{lead}</p>}
 
         <ul className="space-y-3">
           {items.map((item) => (
-            <li key={item} className="flex gap-3 border-t border-border/60 pt-3 text-foreground/90 first:border-0 first:pt-0">
-              <span className={`mt-0.5 shrink-0 ${accentText}`} aria-hidden>
-                {isFor ? (
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M20 6L9 17l-5-5" />
-                  </svg>
-                ) : (
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden>
-                    <circle cx="12" cy="12" r="3.5" fill="currentColor" opacity="0.45" />
-                  </svg>
-                )}
+            <li
+              key={item}
+              className="flex gap-3 border-t border-border/60 pt-3 text-foreground/90 first:border-0 first:pt-0"
+            >
+              <span className="mt-0.5 shrink-0 text-success" aria-hidden>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M20 6L9 17l-5-5" />
+                </svg>
               </span>
-              <span className={isFor ? undefined : "text-sm leading-relaxed"}>{item}</span>
+              <span>{item}</span>
             </li>
           ))}
         </ul>
 
         {close && (
-          <p className="mt-auto pt-6 text-sm leading-relaxed text-muted">
+          <p className="mt-7 rounded-xl bg-teal-soft/45 p-5 text-sm leading-relaxed text-foreground/85">
             {close}{" "}
-            <a href="#contact" className="font-medium text-teal underline underline-offset-2 hover:text-teal-hover">
-              Talk to us
+            <a
+              href={tel}
+              className="font-semibold text-teal underline underline-offset-2 hover:text-teal-hover"
+            >
+              Talk to us now
             </a>
             .
           </p>

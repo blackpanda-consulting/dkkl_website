@@ -76,7 +76,7 @@ function resolveView(status?: string) {
     case "FAILED":
       return {
         title: "Payment did not complete",
-        body: "Your booking is held. You can retry the payment — no confirmed booking has been created.",
+        body: "Your booking is held. You can retry the payment. No confirmed booking has been created.",
         icon: <CrossIcon />,
         iconBg: "bg-danger/15 text-danger",
         showRetry: true,
@@ -94,7 +94,7 @@ function resolveView(status?: string) {
     case "PENDING":
       return {
         title: "Payment pending",
-        body: "Your payment is being confirmed. Please do not initiate a duplicate payment — we will update you shortly.",
+        body: "Your payment is being confirmed. Please do not initiate a duplicate payment. We will update you shortly.",
         icon: <ClockIcon />,
         iconBg: "bg-accent/15 text-accent",
         showRetry: false,

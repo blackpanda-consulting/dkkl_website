@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { faqs } from "@/lib/content";
 import Reveal from "@/components/Reveal";
+import { REVEAL_STAGGER } from "@/lib/motion";
 
 export default function Faq() {
   const [open, setOpen] = useState<number | null>(0);
@@ -12,7 +13,7 @@ export default function Faq() {
       {faqs.items.map((item, i) => {
         const isOpen = open === i;
         return (
-          <Reveal key={item.q} dir="up" delayMs={i * 60}>
+          <Reveal key={item.q} dir="up" delay={i * REVEAL_STAGGER}>
             <div
               className={`lift overflow-hidden rounded-2xl border bg-surface shadow-sm transition-colors ${
                 isOpen ? "border-accent/40" : "border-border"

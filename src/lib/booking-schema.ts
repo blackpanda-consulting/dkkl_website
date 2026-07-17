@@ -54,7 +54,9 @@ export type BookingInput = z.infer<typeof bookingSchema>;
 
 export const CONDITION_OPTIONS = [
   { value: "TERMINALLY_ILL", label: "Terminally ill" },
-  { value: "ELDERLY_FRAIL", label: "Elderly and frail" },
+  // Enum value stays ELDERLY_FRAIL (persisted in the database); only the label
+  // families see is softened.
+  { value: "ELDERLY_FRAIL", label: "Elderly" },
   { value: "OTHER", label: "Other" },
 ] as const;
 
