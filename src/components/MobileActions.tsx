@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { site } from "@/lib/content";
 
-// Persistent mobile actions (spec §3): Call · WhatsApp · Calculate Stay Cost.
+// Persistent mobile actions (spec §3): Call · WhatsApp · Book a Room.
 export default function MobileActions() {
   const tel = site.phone ? `tel:${site.phone}` : "#contact";
   const wa = site.whatsapp
@@ -30,8 +30,8 @@ export default function MobileActions() {
         href="#pricing"
         className="flex flex-col items-center gap-0.5 bg-accent py-2.5 text-xs font-semibold text-white"
       >
-        <CalcIcon />
-        Calculate
+        <BedIcon />
+        Book a Room
       </Link>
     </div>
   );
@@ -51,11 +51,12 @@ function ChatIcon() {
     </svg>
   );
 }
-function CalcIcon() {
+function BedIcon() {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="4" y="2" width="16" height="20" rx="2" />
-      <path d="M8 6h8M8 10h2M12 10h4M8 14h2M12 14h4M8 18h2M12 18h4" />
+      <path d="M3 18v-9M3 13h18v5M21 18v-4" />
+      <path d="M7 13v-3h9a3 3 0 0 1 3 3" />
+      <circle cx="9.5" cy="10.5" r="0.5" fill="currentColor" />
     </svg>
   );
 }

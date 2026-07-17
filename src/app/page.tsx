@@ -12,6 +12,8 @@ import {
   hero,
   who,
   includes,
+  talkToUs,
+  twinSharingNote,
   howItWorks,
   faqs,
   footerDisclaimer,
@@ -117,43 +119,56 @@ export default async function Home() {
 
         {/* WHO IT IS FOR */}
         <Section id="who" eyebrow="Eligibility" title={who.heading} tone="muted">
-          <div className="grid gap-6 md:grid-cols-2">
+          <div className="grid gap-8 md:grid-cols-2">
             <Reveal dir="left" className="h-full">
               <EligibilityCard tone="success" title={who.forTitle} items={who.forItems} />
             </Reveal>
-            <Reveal dir="right" delayMs={80} className="h-full">
-              <EligibilityCard tone="danger" title={who.notForTitle} items={who.notForItems} />
+            <Reveal dir="right" delayMs={160} className="h-full">
+              <EligibilityCard
+                tone="note"
+                title={who.notForTitle}
+                lead={who.notForLead}
+                items={who.notForItems}
+                close={who.notForClose}
+              />
             </Reveal>
           </div>
         </Section>
 
         {/* ACCOMMODATION & PRICING */}
         <Section id="help" eyebrow="Accommodation" title={includes.heading}>
-          <Reveal className="mx-auto mb-10 max-w-2xl text-center">
+          <Reveal className="mx-auto mb-12 max-w-2xl text-center">
             <p className="text-lg leading-relaxed text-muted">{includes.intro}</p>
           </Reveal>
 
           {/* Room offerings */}
-          <div className="grid gap-6 md:grid-cols-3">
+          <div className="grid gap-7 md:grid-cols-3 md:gap-8">
             {includes.rooms.map((room, i) => (
-              <Reveal key={room.name} dir="up" delayMs={i * 90} className="h-full">
+              <Reveal key={room.name} dir="up" delayMs={i * 140} className="h-full">
                 <RoomCard room={room} />
               </Reveal>
             ))}
           </div>
 
-          {/* What's included + Additional services */}
-          <div className="mt-14 grid items-start gap-8 lg:gap-12 md:grid-cols-2">
+          {/* What's included — the photo pairs with a single roomy list, so the
+              copy no longer wraps against a cramped half-column. */}
+          <div className="mt-20 grid items-center gap-10 md:grid-cols-2 lg:gap-16">
             <Reveal dir="left">
               <Photo
                 src="/images/room.jpg"
                 alt="A calm, fully furnished room at Dinesh Kiran Kashi Laabh"
-                ratio="aspect-video"
+                ratio="aspect-4/3"
               />
-              <h3 className="mt-6 text-xl font-semibold text-foreground">{includes.includedTitle}</h3>
-              <ul className="mt-4 grid gap-3 sm:grid-cols-2">
+            </Reveal>
+
+            <Reveal dir="right" delayMs={180}>
+              <h3 className="text-2xl font-semibold text-foreground">{includes.includedTitle}</h3>
+              <ul className="mt-6">
                 {includes.included.map((f) => (
-                  <li key={f} className="flex items-center gap-3 text-foreground/90">
+                  <li
+                    key={f}
+                    className="flex items-center gap-3.5 border-t border-border/60 py-3.5 text-foreground/90 first:border-0 first:pt-0"
+                  >
                     <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-teal-soft text-teal">
                       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                         <path d="M20 6L9 17l-5-5" />
@@ -163,26 +178,43 @@ export default async function Home() {
                   </li>
                 ))}
               </ul>
+              <p className="mt-6 rounded-xl bg-teal-soft/45 p-5 text-sm leading-relaxed text-foreground/80">
+                {twinSharingNote}
+              </p>
             </Reveal>
+          </div>
 
-            <Reveal dir="right" delayMs={100}>
-              <h3 className="text-xl font-semibold text-foreground">{includes.supportTitle}</h3>
-              <p className="mt-2 text-muted">{includes.supportLead}</p>
-              <div className="mt-6 grid grid-cols-2 gap-3">
-                {includes.services.map((s) => (
-                  <div key={s.label} className="service-tile flex h-full flex-col items-start gap-3 rounded-2xl border border-border bg-surface p-4">
-                    <span className="tile-icon flex h-10 w-10 items-center justify-center rounded-xl bg-accent-soft text-accent">
+          {/* Additional services — full width, so six tiles fall into two even
+              rows of three instead of a lopsided two-column stack. */}
+          <div className="mt-20">
+            <Reveal className="mx-auto max-w-2xl text-center">
+              <h3 className="text-2xl font-semibold text-foreground">{includes.supportTitle}</h3>
+              <p className="mt-3 leading-relaxed text-muted">{includes.supportLead}</p>
+            </Reveal>
+            <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {includes.services.map((s, i) => (
+                <Reveal key={s.label} dir="up" delayMs={(i % 3) * 120} className="h-full">
+                  <div className="service-tile flex h-full items-center gap-4 rounded-2xl border border-border bg-surface p-5">
+                    <span className="tile-icon flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-accent-soft text-accent">
                       <ServiceIcon name={s.icon} />
                     </span>
                     <span className="text-sm font-medium leading-snug text-foreground">{s.label}</span>
                   </div>
-                ))}
-              </div>
-              <p className="mt-5 rounded-xl border border-border bg-surface-muted/60 p-4 text-xs leading-relaxed text-muted">
+                </Reveal>
+              ))}
+            </div>
+            <Reveal>
+              <p className="mx-auto mt-8 max-w-3xl text-center text-xs leading-relaxed text-muted">
                 {includes.servicesNote}
               </p>
             </Reveal>
           </div>
+
+          {/* Talk to us — for families who would rather speak to someone than
+              pick a room on their own. */}
+          <Reveal dir="up" className="mt-20">
+            <TalkToUs tel={tel} wa={wa} />
+          </Reveal>
         </Section>
 
         {/* IMMERSIVE KASHI BAND */}
@@ -211,14 +243,14 @@ export default async function Home() {
 
         {/* HOW IT WORKS — step grid */}
         <Section id="how" eyebrow="The journey" title={howItWorks.heading}>
-          <ol className="mx-auto grid max-w-4xl gap-4 sm:grid-cols-2">
+          <ol className="mx-auto grid max-w-4xl gap-5 sm:grid-cols-2">
             {howItWorks.steps.map((step, i) => (
               <Reveal
                 as="li"
                 key={i}
                 dir="up"
-                delayMs={(i % 2) * 90}
-                className="lift flex gap-4 rounded-2xl border border-border bg-surface p-5 shadow-sm"
+                delayMs={(i % 2) * 130}
+                className="lift flex gap-4 rounded-2xl border border-border bg-surface p-6 shadow-sm"
               >
                 <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-accent font-display text-sm font-semibold text-white shadow-(--shadow-glow)">
                   {i + 1}
@@ -230,7 +262,7 @@ export default async function Home() {
         </Section>
 
         {/* PRICING / CALCULATOR */}
-        <Section id="pricing" eyebrow="Stay & pricing" title="Calculate Your Stay Cost" tone="muted">
+        <Section id="pricing" eyebrow="Stay & pricing" title="Book a Room" tone="muted">
           <Reveal dir="zoom">
             <StayCalculator
               singleRatePaise={settings.singleRatePaise}
@@ -247,11 +279,11 @@ export default async function Home() {
 
         {/* CONTACT */}
         <Section id="contact" eyebrow="Get in touch" title="Speak to Our Kashi Team">
-          <div className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
+          <div className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr]">
             <Reveal dir="left">
               <EnquiryForm />
             </Reveal>
-            <Reveal dir="right" delayMs={100}>
+            <Reveal dir="right" delayMs={180}>
               <div className="space-y-4">
                 <ContactCard
                   href={tel}
@@ -327,55 +359,96 @@ function Section({
         tone === "muted" ? "bg-surface-muted pattern-dots" : "bg-background"
       }`}
     >
-      <div className="mx-auto max-w-6xl px-4 py-16 md:py-24">
-        <Reveal className="mb-12 flex flex-col items-center text-center">
-          {eyebrow && <span className="eyebrow mb-4">{eyebrow}</span>}
-          <h2 className="text-2xl font-semibold text-foreground md:text-3xl">{title}</h2>
-          <span className="title-accent" aria-hidden />
-        </Reveal>
+      <div className="mx-auto max-w-6xl px-4 py-20 md:py-24">
+        {/* Eyebrow, then title — a short beat between them reads as an intro
+            rather than the whole header popping in at once. */}
+        <div className="mb-12 flex flex-col items-center text-center md:mb-14">
+          {eyebrow && (
+            <Reveal className="flex flex-col items-center">
+              <span className="eyebrow mb-4">{eyebrow}</span>
+            </Reveal>
+          )}
+          <Reveal delayMs={160} className="flex flex-col items-center">
+            <h2 className="text-3xl font-semibold text-foreground md:text-4xl">{title}</h2>
+            <span className="title-accent" aria-hidden />
+          </Reveal>
+        </div>
         {children}
       </div>
     </section>
   );
 }
 
+// Two tones: "success" affirms who the home is for; "note" sets expectations in a
+// warm, neutral voice. Saying the stay is long-term is enough — the second card
+// deliberately avoids rejection styling (no red, no crosses).
 function EligibilityCard({
   tone,
   title,
+  lead,
   items,
+  close,
 }: {
-  tone: "success" | "danger";
+  tone: "success" | "note";
   title: string;
+  lead?: string;
   items: string[];
+  close?: string;
 }) {
   const isFor = tone === "success";
-  const accentText = isFor ? "text-success" : "text-danger";
-  const accentBg = isFor ? "bg-success/10" : "bg-danger/10";
-  const topBar = isFor ? "bg-success" : "bg-danger";
+  const accentText = isFor ? "text-success" : "text-teal";
+  const accentBg = isFor ? "bg-success/10" : "bg-teal-soft";
+  const topBar = isFor ? "bg-success" : "bg-teal";
   return (
-    <div className="lift relative overflow-hidden rounded-2xl border border-border bg-surface shadow-sm">
+    <div className="lift relative flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-surface shadow-sm">
       <span className={`absolute inset-x-0 top-0 h-1 ${topBar}`} aria-hidden />
-      <div className="p-7">
+      <div className="flex flex-1 flex-col p-8">
         <div className="mb-5 flex items-center gap-3">
           <span className={`flex h-10 w-10 items-center justify-center rounded-xl ${accentBg} ${accentText}`}>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              {isFor ? <path d="M20 6L9 17l-5-5" /> : <path d="M18 6L6 18M6 6l12 12" />}
-            </svg>
+            {isFor ? (
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M20 6L9 17l-5-5" />
+              </svg>
+            ) : (
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="9" />
+                <path d="M12 11v5M12 8h.01" />
+              </svg>
+            )}
           </span>
-          <h3 className={`text-lg font-semibold ${accentText}`}>{title}</h3>
+          <h3 className={`text-xl font-semibold ${accentText}`}>{title}</h3>
         </div>
+
+        {lead && <p className="mb-4 text-sm leading-relaxed text-muted">{lead}</p>}
+
         <ul className="space-y-3">
           {items.map((item) => (
             <li key={item} className="flex gap-3 border-t border-border/60 pt-3 text-foreground/90 first:border-0 first:pt-0">
               <span className={`mt-0.5 shrink-0 ${accentText}`} aria-hidden>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  {isFor ? <path d="M20 6L9 17l-5-5" /> : <path d="M18 6L6 18M6 6l12 12" />}
-                </svg>
+                {isFor ? (
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M20 6L9 17l-5-5" />
+                  </svg>
+                ) : (
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden>
+                    <circle cx="12" cy="12" r="3.5" fill="currentColor" opacity="0.45" />
+                  </svg>
+                )}
               </span>
-              <span>{item}</span>
+              <span className={isFor ? undefined : "text-sm leading-relaxed"}>{item}</span>
             </li>
           ))}
         </ul>
+
+        {close && (
+          <p className="mt-auto pt-6 text-sm leading-relaxed text-muted">
+            {close}{" "}
+            <a href="#contact" className="font-medium text-teal underline underline-offset-2 hover:text-teal-hover">
+              Talk to us
+            </a>
+            .
+          </p>
+        )}
       </div>
     </div>
   );
@@ -414,10 +487,58 @@ function Photo({
   );
 }
 
+// A quiet pause at the end of the section. It sits on white so it lifts off the
+// cream background, and stays centred and narrow so it reads as an aside rather
+// than another card competing with the rooms.
+function TalkToUs({ tel, wa }: { tel: string; wa: string }) {
+  return (
+    <div className="mx-auto max-w-3xl rounded-3xl border border-border-strong bg-surface px-8 py-14 text-center shadow-(--shadow-md) md:px-14">
+      <div className="ornament mb-7" aria-hidden>
+        <ServiceIcon name="lotus" />
+      </div>
+
+      <h3 className="text-2xl font-semibold text-foreground md:text-3xl">{talkToUs.heading}</h3>
+      <p className="mx-auto mt-4 max-w-xl leading-relaxed text-muted">{talkToUs.body}</p>
+
+      <div className="mt-9 flex flex-col items-center justify-center gap-x-7 gap-y-5 sm:flex-row">
+        <a
+          href={tel}
+          className="lift inline-flex items-center gap-2.5 rounded-full bg-teal px-7 py-4 text-sm font-semibold text-white shadow-(--shadow-sm) hover:bg-teal-hover"
+        >
+          <PhoneIcon />
+          {site.phone ? formatPhone(site.phone) : talkToUs.callLabel}
+        </a>
+
+        <p className="text-sm text-muted">
+          <a
+            href={wa}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-medium text-teal underline underline-offset-4 transition-colors hover:text-teal-hover"
+          >
+            {talkToUs.waLabel}
+          </a>
+          <span className="px-2.5 text-border-strong" aria-hidden>·</span>
+          <a
+            href="#contact"
+            className="font-medium text-teal underline underline-offset-4 transition-colors hover:text-teal-hover"
+          >
+            {talkToUs.enquiryLabel}
+          </a>
+        </p>
+      </div>
+
+      <p className="mt-7 text-[11px] uppercase tracking-[0.14em] text-muted/70">
+        {talkToUs.eyebrow}
+      </p>
+    </div>
+  );
+}
+
 function RoomCard({ room }: { room: (typeof includes.rooms)[number] }) {
   return (
     <div
-      className={`lift relative flex h-full flex-col overflow-hidden rounded-2xl bg-surface p-7 shadow-sm ${
+      className={`lift relative flex h-full flex-col overflow-hidden rounded-2xl bg-surface p-8 shadow-sm ${
         room.featured ? "border-2 border-accent/40" : "border border-border"
       }`}
     >
@@ -426,18 +547,24 @@ function RoomCard({ room }: { room: (typeof includes.rooms)[number] }) {
           Most spacious
         </span>
       )}
-      <h3 className="pr-24 text-lg font-semibold text-foreground">{room.name}</h3>
+      <h3 className="pr-24 text-xl font-semibold text-foreground">{room.name}</h3>
       <div className="mt-4 flex items-baseline gap-2">
         <span className="font-display text-3xl font-semibold text-accent md:text-4xl">{room.price}</span>
         <span className="text-sm font-medium text-muted">{room.gst}</span>
       </div>
       <p className="text-xs uppercase tracking-wide text-muted">{room.per}</p>
       <p className="mt-4 flex-1 leading-relaxed text-muted">{room.desc}</p>
+      {/* Only the featured room carries the filled button — three glowing
+          terracotta pills side by side read as a wall of red. */}
       <a
         href="#pricing"
-        className="btn-primary mt-6 inline-block self-start rounded-full px-5 py-2.5 text-sm font-semibold"
+        className={`mt-6 inline-block self-start rounded-full px-5 py-2.5 text-sm font-semibold transition-all ${
+          room.featured
+            ? "btn-primary"
+            : "border border-border-strong text-accent hover:-translate-y-0.5 hover:border-accent hover:bg-accent-soft"
+        }`}
       >
-        Calculate stay cost →
+        Book this room →
       </a>
     </div>
   );

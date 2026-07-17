@@ -43,7 +43,7 @@ export const bookingSchema = z.object({
 
   // Required confirmations (spec §8). Must be true.
   longTermConfirmed: z.literal(true, {
-    error: "Please confirm this is a long-term stay, not tourist accommodation",
+    error: "Please confirm this is a long-term stay of a month or more",
   }),
   consentAccepted: z.literal(true, {
     error: "Please accept the responsibility, cancellation, refund and privacy terms",

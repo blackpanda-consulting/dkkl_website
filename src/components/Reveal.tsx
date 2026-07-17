@@ -32,7 +32,9 @@ export default function Reveal({
           io.disconnect();
         }
       },
-      { threshold: 0.12, rootMargin: "0px 0px -40px 0px" },
+      // Wait until the element is meaningfully in view before starting, so the
+      // long settle plays where it can be seen rather than off the bottom edge.
+      { threshold: 0.15, rootMargin: "0px 0px -90px 0px" },
     );
     io.observe(el);
     return () => io.disconnect();

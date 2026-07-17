@@ -44,7 +44,7 @@ export default function TopNav() {
             href="#pricing"
             className="rounded-full bg-accent px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-accent-hover"
           >
-            Calculate Stay Cost
+            Book a Room
           </Link>
         </nav>
 

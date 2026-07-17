@@ -29,7 +29,7 @@ const devanagari = Noto_Serif_Devanagari({
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 const description =
-  "Long-term twin-sharing accommodation in Kashi (Varanasi) for terminally ill, elderly and frail residents, with a responsible family member or attendant. Calculate the stay cost and book securely.";
+  "Long-term twin-sharing accommodation in Kashi (Varanasi) for terminally ill, elderly and frail residents, with a responsible family member or attendant. Book a room securely, or talk to our Kashi team.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),

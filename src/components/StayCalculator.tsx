@@ -290,7 +290,7 @@ export default function StayCalculator({
 
       {/* ---------------- Right: details + consent + CTA ---------------- */}
       <form onSubmit={handleSubmit(onSubmit)} className="card p-7">
-        <h3 className="font-display text-lg font-semibold text-foreground">
+        <h3 className="font-display text-xl font-semibold text-foreground">
           Resident &amp; family details
         </h3>
         <p className="mt-1 text-sm text-muted">
@@ -341,7 +341,7 @@ export default function StayCalculator({
 
         <div className="mt-5 space-y-3 rounded-2xl bg-surface-muted p-4">
           <Checkbox {...register("longTermConfirmed")} error={errors.longTermConfirmed?.message as string}>
-            I confirm this is a long-term stay and not tourist accommodation.
+            I confirm this is a long-term stay of a month or more.
           </Checkbox>
           <Checkbox {...register("consentAccepted")} error={errors.consentAccepted?.message as string}>
             I accept the responsibility, cancellation, refund and privacy terms.{" "}
