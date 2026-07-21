@@ -45,7 +45,7 @@ export const metadata: Metadata = {
     "long-term stay Kashi",
     "Varanasi elderly care",
     "end-of-life stay Kashi",
-    "twin-sharing accommodation Varanasi",
+    "twin sharing accommodation Varanasi",
     "terminally ill residential stay",
     "Kashi Vishwanath elderly stay",
   ],
