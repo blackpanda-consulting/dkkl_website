@@ -6,8 +6,8 @@ import { site } from "@/lib/content";
 export default function BrandName({ className = "" }: { className?: string }) {
   return (
     <span className={`brand-name ${className}`}>
-      <span className="text-teal">{site.nameLatin}</span>{" "}
-      <span className="text-caramel">{site.nameDevanagari}</span>
+      <span className="whitespace-nowrap text-teal">{site.nameLatin}</span>{" "}
+      <span className="whitespace-nowrap text-caramel">{site.nameDevanagari}</span>
     </span>
   );
 }

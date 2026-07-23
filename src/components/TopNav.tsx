@@ -46,19 +46,19 @@ export default function TopNav() {
           </span>
         </Link>
 
-        <nav className="hidden items-center gap-6 md:flex">
+        <nav className="hidden items-center gap-5 lg:flex xl:gap-6">
           {nav.map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              className="text-sm text-foreground/80 transition-colors hover:text-accent"
+              className="whitespace-nowrap text-sm text-foreground/80 transition-colors hover:text-accent"
             >
               {item.label}
             </Link>
           ))}
           <Link
             href="#pricing"
-            className="rounded-full bg-accent px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-accent-hover"
+            className="whitespace-nowrap rounded-full bg-accent px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-accent-hover"
           >
             Book a Room
           </Link>
@@ -69,7 +69,7 @@ export default function TopNav() {
           aria-label="Toggle menu"
           aria-expanded={open}
           onClick={() => setOpen((v) => !v)}
-          className="rounded-md border border-border p-2 md:hidden"
+          className="rounded-md border border-border p-2 lg:hidden"
         >
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             {open ? (
@@ -89,7 +89,7 @@ export default function TopNav() {
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.32, ease: EASE }}
-            className="overflow-hidden border-t border-border bg-surface md:hidden"
+            className="overflow-hidden border-t border-border bg-surface lg:hidden"
           >
             <ul className="flex flex-col gap-1 px-4 py-3">
               {nav.map((item) => (
@@ -103,6 +103,15 @@ export default function TopNav() {
                   </Link>
                 </li>
               ))}
+              <li className="mt-2">
+                <Link
+                  href="#pricing"
+                  onClick={() => setOpen(false)}
+                  className="block rounded-full bg-accent px-4 py-2.5 text-center text-sm font-semibold text-white hover:bg-accent-hover"
+                >
+                  Book a Room
+                </Link>
+              </li>
             </ul>
           </motion.nav>
         )}

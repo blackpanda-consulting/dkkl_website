@@ -18,6 +18,7 @@ import {
   hero,
   who,
   booking,
+  nav,
   includes,
   talkToUs,
   twinSharingNote,
@@ -93,7 +94,7 @@ export default async function Home() {
 
           {/* The gradient span can't survive a per-word split, so the headline
               reveals as two runs and the accent phrase keeps its treatment. */}
-          <h1 className="text-4xl font-semibold leading-[1.1] text-foreground md:text-6xl">
+          <h1 className="text-[1.9rem] font-semibold leading-[1.15] text-foreground sm:text-4xl md:text-5xl lg:text-6xl">
             <WordReveal text="A Dignified Place for the" delay={0.1} />{" "}
             <WordReveal className="text-gradient" text="Final Years, Months or Days" delay={0.28} />{" "}
             <WordReveal text="in Kashi" delay={0.62} />
@@ -330,22 +331,106 @@ export default async function Home() {
         </Section>
       </main>
 
-      {/* FOOTER DISCLAIMER */}
+      {/* FOOTER */}
       <footer className="border-t border-border bg-surface-muted">
-        <div className="mx-auto max-w-4xl px-4 py-12">
-          {/* Full approved lockup: mark, name, tagline and the Aaroha OM credit. */}
-          <Image
-            src="/logos/final_logo.png"
-            alt={`${site.romanName} — Spiritual Hospice and Care Centre, powered by Aaroha Om`}
-            width={420}
-            height={420}
-            sizes="(max-width: 768px) 260px, 320px"
-            className="mb-8 h-auto w-65 md:w-80"
-          />
-          <p className="text-sm leading-relaxed text-muted">{footerDisclaimer}</p>
-          <p className="mt-6 text-xs text-muted">
-            © {new Date().getFullYear()} {site.romanName}
-          </p>
+        <div className="mx-auto max-w-6xl px-4 py-14 md:py-16">
+          <div className="grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1.2fr]">
+            {/* Brand — anchors the left. */}
+            <div className="sm:col-span-2 lg:col-span-1">
+              <Image
+                src="/logos/logo-lockup.png"
+                alt={`${site.romanName}, Spiritual Hospice and Care Centre, powered by Aaroha Om`}
+                width={576}
+                height={391}
+                sizes="(max-width: 768px) 240px, 280px"
+                className="h-auto w-60 md:w-64"
+              />
+              <p className="mt-5 max-w-xs text-sm leading-relaxed text-muted">
+                {site.tagline}
+              </p>
+            </div>
+
+            {/* Page links */}
+            <nav aria-label="Footer">
+              <h3 className="footer-heading">Explore</h3>
+              <ul className="mt-4 space-y-2.5">
+                {nav.map((item) => (
+                  <li key={item.href}>
+                    <a href={item.href} className="footer-link text-sm">
+                      {item.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+
+            {/* Rooms */}
+            <div>
+              <h3 className="footer-heading">Our rooms</h3>
+              <ul className="mt-4 space-y-2.5">
+                {includes.rooms.map((room) => (
+                  <li key={room.name}>
+                    <a href="#pricing" className="footer-link text-sm">
+                      {room.name}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Speak with us — anchors the right. */}
+            <div>
+              <h3 className="footer-heading">Speak with us</h3>
+              <ul className="mt-4 space-y-3 text-sm">
+                {site.phone && (
+                  <li>
+                    <a href={tel} className="footer-link inline-flex items-center gap-2.5">
+                      <span className="footer-ico"><PhoneIcon /></span>
+                      {formatPhone(site.phone)}
+                    </a>
+                  </li>
+                )}
+                {site.whatsapp && (
+                  <li>
+                    <a
+                      href={wa}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="footer-link inline-flex items-center gap-2.5"
+                    >
+                      <span className="footer-ico"><ChatIcon /></span>
+                      WhatsApp
+                    </a>
+                  </li>
+                )}
+                {site.email && (
+                  <li>
+                    <a
+                      href={`mailto:${site.email}`}
+                      className="footer-link inline-flex items-center gap-2.5"
+                    >
+                      <span className="footer-ico"><MailIcon /></span>
+                      {site.email}
+                    </a>
+                  </li>
+                )}
+                <li>
+                  <a href="#contact" className="footer-link inline-flex items-center gap-2.5">
+                    <span className="footer-ico">→</span>
+                    Send an enquiry
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          {/* Legal disclaimer + copyright */}
+          <div className="mt-14 border-t border-border pt-8">
+            <p className="max-w-4xl text-xs leading-relaxed text-muted">{footerDisclaimer}</p>
+            <p className="mt-6 text-xs text-muted">
+              © {new Date().getFullYear()} {site.romanName}
+            </p>
+          </div>
         </div>
       </footer>
 
@@ -700,6 +785,14 @@ function ChatIcon() {
   return (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
       <path d="M21 11.5a8.4 8.4 0 0 1-9 8.5 9 9 0 0 1-4-1L3 20l1-4a8.5 8.5 0 1 1 16-4.5z" />
+    </svg>
+  );
+}
+function MailIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="5" width="18" height="14" rx="2" />
+      <path d="M3.5 6.5l8.5 6 8.5-6" />
     </svg>
   );
 }
