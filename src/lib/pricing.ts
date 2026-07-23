@@ -11,7 +11,8 @@
 export const MIN_MONTHS = 1;
 export const MAX_MONTHS = 24; // beyond this, the UI offers a callback instead
 
-// One-time refundable security deposit, not a monthly charge.
+// One-time refundable security deposit, not a monthly charge. The deposit is
+// refundable and is settled with the team, never collected on this site.
 export const DEPOSIT_PAISE = 5_000_000; // ₹50,000
 
 export type RoomType = "SINGLE" | "DOUBLE" | "SHARED";
