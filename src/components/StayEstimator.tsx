@@ -3,10 +3,12 @@
 import { useMemo, useState } from "react";
 import {
   computePrice,
+  depositForStay,
+  depositLabel,
   estimatedTotalPaise,
   formatInr,
   rateForRoom,
-  DEPOSIT_PAISE,
+  SHORT_STAY_DEPOSIT_PAISE,
   MAX_MONTHS,
   MIN_MONTHS,
   type RoomType,
@@ -42,8 +44,10 @@ export default function StayEstimator({
 
   const ratePaise = rateForRoom(roomType, rates);
   const price = useMemo(() => computePrice(months, ratePaise), [months, ratePaise]);
+  // Deposit is tiered by stay length and derived from the selected room's rate.
+  const deposit = depositForStay(months, ratePaise);
   // Headline figure is the family's full outlay: accommodation + deposit.
-  const grandTotal = estimatedTotalPaise(price.totalPaise);
+  const grandTotal = estimatedTotalPaise(price.totalPaise, deposit);
   const animatedTotal = useCountUp(grandTotal);
 
   const wa = site.whatsapp ? `https://wa.me/${site.whatsapp}` : "#contact";
@@ -65,7 +69,7 @@ export default function StayEstimator({
               </p>
               <p className="mt-2 text-sm text-white/80">
                 {ROOM_OPTIONS.find((r) => r.key === roomType)?.label} · {months}{" "}
-                {months === 1 ? "month" : "months"} · includes {formatInr(DEPOSIT_PAISE)}{" "}
+                {months === 1 ? "month" : "months"} · includes {formatInr(deposit)}{" "}
                 refundable deposit · plus GST
               </p>
             </>
@@ -184,10 +188,7 @@ export default function StayEstimator({
                 label={`× ${months} ${months === 1 ? "month" : "months"}`}
                 value={formatInr(price.totalPaise)}
               />
-              <Row
-                label="Refundable deposit (one-time)"
-                value={formatInr(DEPOSIT_PAISE)}
-              />
+              <Row label={depositLabel(months)} value={formatInr(deposit)} />
               <div className="border-t border-border pt-3">
                 <Row label="Estimated total" value={formatInr(grandTotal)} strong />
               </div>
@@ -195,9 +196,12 @@ export default function StayEstimator({
           )}
 
           <p className="mt-6 text-xs leading-relaxed text-muted">
-            The {formatInr(DEPOSIT_PAISE)} deposit is a one-time, refundable security
-            deposit. {booking.estimateNote} GST, where applicable, is billed separately.{" "}
-            {optionalServicesNote}
+            The security deposit is refundable and depends on the length of stay:{" "}
+            {formatInr(SHORT_STAY_DEPOSIT_PAISE)}{" "}
+            for a one-month stay, one month&apos;s charges for a three or six month
+            stay, and two months&apos; charges for longer stays, based on the occupancy
+            you choose. {booking.estimateNote} GST, where applicable, is billed
+            separately. {optionalServicesNote}
           </p>
         </div>
 

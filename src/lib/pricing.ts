@@ -11,9 +11,30 @@
 export const MIN_MONTHS = 1;
 export const MAX_MONTHS = 24; // beyond this, the UI offers a callback instead
 
-// One-time refundable security deposit, not a monthly charge. The deposit is
-// refundable and is settled with the team, never collected on this site.
-export const DEPOSIT_PAISE = 5_000_000; // ₹50,000
+// Refundable security deposit. Tiered by length of stay, and calculated from the
+// SELECTED room's monthly rate, so it differs across single / double / shared.
+//
+//     1 to 2 months    flat ₹5,000
+//     3 to 6 months    one month's charges
+//     7 months plus    two months' charges
+//
+// Confirmed anchors: 1 month = ₹5,000, 3 and 6 months = one month, 12 months =
+// two months. The unnamed lengths (2, 4, 5, 7 to 11) follow the bands above.
+// Refundable, settled with the team, never collected on this site.
+export const SHORT_STAY_DEPOSIT_PAISE = 500_000; // ₹5,000
+
+export function depositForStay(months: number, monthlyRatePaise: number): number {
+  if (months <= 2) return SHORT_STAY_DEPOSIT_PAISE;
+  if (months <= 6) return monthlyRatePaise;
+  return monthlyRatePaise * 2;
+}
+
+// Describes how the deposit was derived, so the breakdown line explains itself.
+export function depositLabel(months: number): string {
+  if (months <= 2) return "Refundable deposit";
+  if (months <= 6) return "Refundable deposit (1 month)";
+  return "Refundable deposit (2 months)";
+}
 
 export type RoomType = "SINGLE" | "DOUBLE" | "SHARED";
 
@@ -46,8 +67,11 @@ export function computePrice(months: number, monthlyRatePaise: number): PriceBre
 }
 
 /** What the family should budget for: accommodation plus the refundable deposit. */
-export function estimatedTotalPaise(accommodationPaise: number): number {
-  return accommodationPaise + DEPOSIT_PAISE;
+export function estimatedTotalPaise(
+  accommodationPaise: number,
+  depositPaise: number,
+): number {
+  return accommodationPaise + depositPaise;
 }
 
 // Pick the monthly rate for an occupancy type from the configured settings.
