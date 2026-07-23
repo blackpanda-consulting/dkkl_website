@@ -15,6 +15,8 @@ export const site = {
   tagline: "Long-term residential stay in Kashi",
   phone: process.env.NEXT_PUBLIC_PHONE ?? "",
   whatsapp: process.env.NEXT_PUBLIC_WHATSAPP ?? "",
+  // Set NEXT_PUBLIC_EMAIL to show an email in the footer (e.g. connect@aarohaom.com).
+  email: process.env.NEXT_PUBLIC_EMAIL ?? "",
 };
 
 // Booking is a flat fee paid on Razorpay's own hosted page. The monthly rates

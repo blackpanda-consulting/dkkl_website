@@ -151,6 +151,30 @@ html {
   background: var(--gold);
 }
 
+/* Footer columns */
+.footer-heading {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.footer-link {
+  color: var(--muted);
+  transition: color 0.2s ease;
+}
+.footer-link:hover {
+  color: var(--teal);
+}
+.footer-ico {
+  display: inline-flex;
+  color: var(--teal);
+}
+.footer-ico svg {
+  width: 16px;
+  height: 16px;
+}
+
 /* Ornamental divider (thin rule + centered diya) */
 .ornament {
   display: flex;

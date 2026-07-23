@@ -47,9 +47,10 @@ export default function WordReveal({
         <span
           key={`${word}-${i}`}
           aria-hidden
-          // The padding gives descenders (g, y, p) room inside the mask; the
+          // Symmetric padding gives descenders (g, y, p) AND tall glyphs / caps
+          // room inside the overflow mask, so nothing clips on tight leading; the
           // matching negative margin keeps the line box where it was.
-          className="inline-block overflow-hidden pb-[0.14em] -mb-[0.14em]"
+          className="inline-block overflow-hidden py-[0.14em] my-[-0.14em]"
         >
           <motion.span className="inline-block" variants={wordVariants}>
             {word}
